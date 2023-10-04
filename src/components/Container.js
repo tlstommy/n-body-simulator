@@ -10,7 +10,7 @@ export default function Container(){
 
         
         { x: 200, y: 300, vX: 0, vY: 1.5, radius: 10, color: 'red', mass: 10, staticBody: false},
-        { x: 00, y: 300, vX: 0, vY: -1.5, radius: 10, color: 'red', mass: 10, staticBody: false},
+        { x: 600, y: 300, vX: 0, vY: -1.5, radius: 10, color: 'red', mass: 10, staticBody: false},
         //{ x: 300, y: 300, vX: 0, vY: 1.5, radius: 10, color: 'red', mass: 10, staticBody: false},
 
     ];
