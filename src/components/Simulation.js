@@ -11,7 +11,7 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const TIME_MODIFIER = 1;
-    const G = .66; // Grav constant
+    const G = 0.000667; // Grav constant
     
 
     //based on newtons grav law
@@ -49,23 +49,24 @@ export default function Simulation(props){
                 const force = G * ((body.mass * otherBody.mass) / (r * r));
                 
                 //multiply force by direction and add to dir
-                aX += force * dx / r;
-                aY += force * dy / r;
+                aX += (force * dx / r) / body.mass;
+                aY += (force * dy / r) / body.mass;
                 console.log(r);
             }
         }
 
 
         if(!body.staticBody){
+            const newX = body.x + body.vX * TIME_MODIFIER + 0.5 * aX * TIME_MODIFIER * TIME_MODIFIER;
+            const newY = body.y + body.vY * TIME_MODIFIER + 0.5 * aY * TIME_MODIFIER * TIME_MODIFIER;
+
             body.vX += aX * TIME_MODIFIER;
             body.vY += aY * TIME_MODIFIER;
-            body.x += body.vX * TIME_MODIFIER;
-            body.y += body.vY * TIME_MODIFIER;
-                     
-        }else{
-            
-        }
 
+            body.x = newX;
+            body.y = newY;
+                     
+        }
     }
 
 
@@ -77,7 +78,11 @@ export default function Simulation(props){
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            
+            for (let i = 0; i < 10; i++) {
+                bodies.forEach(body => {
+                    updateBody(body, bodies);
+                });
+            }
 
             
         
