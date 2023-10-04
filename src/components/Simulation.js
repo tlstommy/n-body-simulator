@@ -35,8 +35,7 @@ export default function Simulation(props){
                 //coll handling
                 if (r < combRadius) {
             
-                    [body.vx, otherBody.vx] = [otherBody.vx, body.vx];
-                    [body.vy, otherBody.vy] = [otherBody.vy, body.vy];
+                    
                     continue;
                 }
                 
