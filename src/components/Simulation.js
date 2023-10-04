@@ -10,8 +10,8 @@ export default function Simulation(props){
 
     const [bodyY, setBodyY] = useState(); 
 
-    const TIME_MODIFIER = 0.1;
-    const G = 0.1; // Grav constant
+    const SIM_SPEED = 0.1;
+    const G = 0.5; // Grav constant
     
 
     //based on newtons grav law
@@ -57,14 +57,12 @@ export default function Simulation(props){
 
 
         if(!body.staticBody){
-            const newX = body.x + body.vX * TIME_MODIFIER + 0.5 * aX * TIME_MODIFIER * TIME_MODIFIER;
-            const newY = body.y + body.vY * TIME_MODIFIER + 0.5 * aY * TIME_MODIFIER * TIME_MODIFIER;
+            
+            body.vX += aX * SIM_SPEED;
+            body.vY += aY * SIM_SPEED;
 
-            body.vX += aX * TIME_MODIFIER;
-            body.vY += aY * TIME_MODIFIER;
-
-            body.x = newX;
-            body.y = newY;
+            body.x += body.vX;
+            body.y += body.vY;
                      
         }
     }
@@ -78,12 +76,6 @@ export default function Simulation(props){
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            for (let i = 0; i < 10; i++) {
-                bodies.forEach(body => {
-                    updateBody(body, bodies);
-                });
-            }
-
             
         
             // Now draw the updated bodies
