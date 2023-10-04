@@ -11,10 +11,10 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const TIME_MODIFIER = 1;
-    const G = 0.2; // Grav constant
+    const G = .66; // Grav constant
     
 
-    //based on newtrons grav law
+    //based on newtons grav law
     function updateBody(body, bodies) {
         
         
