@@ -13,7 +13,7 @@ export default function Simulation(props){
 
     //based on newtrons grav law
     function updateBody(body, bodies) {
-        console.log(body)
+        
         
         //x and y accel init
         let ax = 0;
@@ -26,8 +26,20 @@ export default function Simulation(props){
                 const dx = otherBody.x - body.x;
                 const dy = otherBody.y - body.y;
 
-                //r = distance between the two using pyth threoy
+                //r = distance between the two using pyth theroy
                 const r = Math.sqrt(dx * dx + dy * dy);
+
+                const combRadius = body.radius + otherBody.radius;
+                
+                
+                //coll handling
+                if (r < combRadius) {
+            
+                    [body.vx, otherBody.vx] = [otherBody.vx, body.vx];
+                    [body.vy, otherBody.vy] = [otherBody.vy, body.vy];
+                    continue;
+                }
+                
                 
                 //Newton's law of universal gravitation to calc F, the gravitational force acting between the two objects
                 const force = G * ((body.mass * otherBody.mass) / (r * r * r));
@@ -35,8 +47,10 @@ export default function Simulation(props){
                 //multiply force by direction and add to dir
                 ax += force * dx;
                 ay += force * dy;
+                console.log(r);
             }
         }
+
 
         if(!body.staticBody){
             body.vX += ax;
@@ -74,5 +88,5 @@ export default function Simulation(props){
     }, [bodies]);
     
     
-    return <canvas ref={canvasRef} width={800} height={600} className="sim-canvas" />
+    return <canvas ref={canvasRef} width={800} height={800} className="sim-canvas" />
 }
