@@ -10,8 +10,8 @@ export default function Simulation(props){
 
     const [bodyY, setBodyY] = useState(); 
 
-    const TIME_MODIFIER = 1;
-    const G = 0.000667; // Grav constant
+    const TIME_MODIFIER = 0.1;
+    const G = 0.1; // Grav constant
     
 
     //based on newtons grav law
