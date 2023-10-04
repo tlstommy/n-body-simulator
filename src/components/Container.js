@@ -6,10 +6,13 @@ import Simulation from './Simulation';
 export default function Container(){
 
     const bodiesData = [
-        { x: 400, y: 300, vX: 0, vY: 0, radius: 20, color: 'blue', mass: 200, staticBody: true},
+        { x: 400, y: 300, vX: 0, vY: 0, radius: 20, color: 'yellow', mass: 100, staticBody: true},
         
-        { x: 500, y: 300, vX: 0, vY: 1.5, radius: 10, color: 'green', mass: 10, staticBody: false},
-        { x: 600, y: 300, vX: 0, vY: -1.5, radius: 10, color: 'red', mass: 10, staticBody: false},
+        { x: 550, y: 450, vX: 0, vY: 0, radius: 10, color: 'green', mass: 10, staticBody: false},
+        { x: 250, y: 450, vX: 0, vY: 0, radius: 10, color: 'red', mass: 10, staticBody: false},
+        { x: 400, y: 90, vX: 0, vY: 0, radius: 10, color: 'blue', mass: 10, staticBody: false},
+        
+        
     ];
 
     
