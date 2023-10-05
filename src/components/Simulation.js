@@ -92,7 +92,7 @@ export default function Simulation(props){
     
     
     return( <div>
-        <canvas ref={canvasRef} width={800} height={600} className="sim-canvas" />
+        <canvas ref={canvasRef} width={800} height={800} className="sim-canvas" />
         <p style={{ whiteSpace: "nowrap", width: "100px"}}>{bodyY}</p>
     </div>
     );
