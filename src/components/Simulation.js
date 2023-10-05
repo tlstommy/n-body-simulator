@@ -35,12 +35,15 @@ export default function Simulation(props){
 
                 
                 
+
+                const combRadius = body.radius + otherBody.radius;
+                
+                
                 //coll handling
-                if (r <  body.radius + otherBody.radius) {
-                    
-                    console.log("collide!")
-                    
-                    
+                if (r < combRadius) {
+            
+                    [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
+                    [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
                     continue;
                 }
                 
