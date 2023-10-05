@@ -27,7 +27,7 @@ export default function Simulation(props){
 
         for (const otherBody of bodies) {
             if (body !== otherBody) {
-
+                const bodyData = body;
                 //pos diffs for each body to calculate r 
                 const dx = otherBody.x - body.x;
                 const dy = otherBody.y - body.y;
@@ -44,9 +44,10 @@ export default function Simulation(props){
                 
                 //coll handling
                 if (r < combRadius) {
-                    //handleCollision(body,otherBody,dx,dy,r,combRadius);
-                    [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
-                    [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
+                    if (body.mass === otherBody.mass) {
+                        return [body, otherBody]; 
+                    }
+                    //return [body]; 
                 }
                 
                 
@@ -56,7 +57,6 @@ export default function Simulation(props){
                 //multiply force by direction and add to dir
                 aX += (force * dx / r) / body.mass;
                 aY += (force * dy / r) / body.mass;
-                console.log(r);
             }
         }
 
@@ -76,17 +76,29 @@ export default function Simulation(props){
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
+
         
         //Anim bodies
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            
+            let bodiesToDelete = [];
         
             // Now draw the updated bodies
             bodies.forEach(body => {
-                updateBody(body, bodies);
+                const collisionData = updateBody(body, bodies);
                 GravBody({ ...body, ctx });
+
+                if (collisionData) {
+                    bodiesToDelete = bodiesToDelete.concat(collisionData);
+                }
+            });
+
+            bodiesToDelete.forEach(bodyToDelete => {
+                const index = bodies.indexOf(bodyToDelete);
+                if (index !== -1) {
+                    bodies.splice(index, 1);
+                }
             });
 
             requestAnimationFrame(animate);
