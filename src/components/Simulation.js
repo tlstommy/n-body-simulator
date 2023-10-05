@@ -13,6 +13,9 @@ export default function Simulation(props){
     const SIM_SPEED = 0.1;
     const G = 1; // Grav constant
     
+    function handleCollision(body, otherBody,dx,dy,r,combRadius){
+        
+    }
 
     //based on newtons grav law
     function updateBody(body, bodies) {
@@ -41,10 +44,7 @@ export default function Simulation(props){
                 
                 //coll handling
                 if (r < combRadius) {
-            
-                    [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
-                    [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
-                    continue;
+                    handleCollision(body,otherBody,dx,dy,r,combRadius);
                 }
                 
                 
