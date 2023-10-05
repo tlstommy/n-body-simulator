@@ -77,11 +77,16 @@ export default function Simulation(props){
         }
     }
 
+    const animationRef = useRef();
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
+        //fix anim loop bug with multiple bodies
+        if (animationRef.current) {
+            cancelAnimationFrame(animationRef.current);
+        }
         
         //Anim bodies
         function animate() {
@@ -106,10 +111,16 @@ export default function Simulation(props){
                 }
             });
 
-            requestAnimationFrame(animate);
+            animationRef.current = requestAnimationFrame(animate);
         }
 
         animate();
+        //chatgpt helped with this part
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
     }, [bodies]);
     
     
