@@ -47,6 +47,11 @@ export default function Simulation(props){
                     if (body.mass === otherBody.mass) {
                         return [body, otherBody]; 
                     }
+                    if (body.mass > otherBody.mass) {
+                        return [otherBody]; 
+                    }else{
+                        return [body]; 
+                    }
                     //return [body]; 
                 }
                 
