@@ -13,8 +13,24 @@ export default function Simulation(props){
     const SIM_SPEED = 0.1;
     const G = 6.67; // Grav constant
     
-    function handleCollision(body, otherBody,dx,dy,r,combRadius){
-        
+    function handleCollision(body, otherBody){
+        if (body.mass === otherBody.mass) {
+            return {
+                type: "fragment",
+                collidors: [body, otherBody]
+            }; 
+        }
+        if (body.mass > otherBody.mass) {
+            return {
+                type: "",
+                collidors: [otherBody]
+            }; 
+        }else{
+            return {
+                type: "",
+                collidors: [body]
+            }; 
+        }
     }
 
     //based on newtons grav law
@@ -44,15 +60,7 @@ export default function Simulation(props){
                 
                 //coll handling
                 if (r < combRadius) {
-                    if (body.mass === otherBody.mass) {
-                        return [body, otherBody]; 
-                    }
-                    if (body.mass > otherBody.mass) {
-                        return [otherBody]; 
-                    }else{
-                        return [body]; 
-                    }
-                    //return [body]; 
+                    return handleCollision(body,otherBody);
                 }
                 
                 
@@ -63,6 +71,7 @@ export default function Simulation(props){
                 aX += (force * dx / r) / body.mass;
                 aY += (force * dy / r) / body.mass;
             }
+            
         }
 
 
@@ -96,11 +105,18 @@ export default function Simulation(props){
         
             // Now draw the updated bodies
             bodies.forEach(body => {
-                const collisionData = updateBody(body, bodies);
+                const collsionData = updateBody(body, bodies);
+                
                 GravBody({ ...body, ctx });
-
-                if (collisionData) {
-                    bodiesToDelete = bodiesToDelete.concat(collisionData);
+                
+                if(collsionData){
+                    if (collsionData.type === "fragment") {
+                        bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
+                    
+                    //normal removal
+                    }else if(collsionData.type === ""){
+                        bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
+                    }
                 }
             });
 
