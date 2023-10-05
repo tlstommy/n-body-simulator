@@ -6,10 +6,13 @@ import Simulation from './Simulation';
 export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
-        { x: 400, y: 400, vX: 0, vY: 0, radius: 20, color: 'yellow', mass: 5000, staticBody: true},
-        { x: 600, y: 400, vX: 0, vY: 1.5, radius: 10, color: 'green', mass: 50, staticBody: false},
-        { x: 200, y: 400, vX: 0, vY: -1.5, radius: 10, color: 'red', mass: 50, staticBody: false},
+        { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: 1000, staticBody: true},
+        { x: 100, y: 400, vX: 0, vY: -1.5, radius: 8, color: 'yellow', mass: 10, staticBody: false},
+        { x: 700, y: 400, vX: 0, vY: 1.5, radius: 8, color: 'green', mass: 10, staticBody: false},
+        { x: 400, y: 100, vX: 1.5, vY: 0, radius: 8, color: 'red', mass: 10, staticBody: false},
+        { x: 400, y: 700, vX: -1.5, vY: 0, radius: 8, color: 'blue', mass: 10, staticBody: false},
     ]);
+    
 
 
     const handleClick = (e) => {
@@ -31,7 +34,7 @@ export default function Container(){
             vY: 0, 
             radius: 10, 
             color: 'purple', 
-            mass: 50, 
+            mass: 10, 
             staticBody: false
         }
 

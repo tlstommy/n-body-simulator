@@ -11,7 +11,7 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const G = 1; // Grav constant
+    const G = 6.67; // Grav constant
     
     function handleCollision(body, otherBody,dx,dy,r,combRadius){
         
