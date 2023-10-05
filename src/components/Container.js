@@ -13,19 +13,22 @@ export default function Container(){
 
 
     const handleClick = (e) => {
+        var canvas = document.getElementById("canvas");
+        var rect = canvas.getBoundingClientRect();
+        
 
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
 
         console.log(mouseX,mouseY);
 
 
         //create a new grav body
         const newBody = {
-            x: 600, 
-            y: 400, 
-            vX: 0, 
-            vY: 1.5, 
+            x: mouseX, 
+            y: mouseY, 
+            vX: -1.5, 
+            vY: 0, 
             radius: 10, 
             color: 'purple', 
             mass: 50, 
@@ -39,7 +42,7 @@ export default function Container(){
     
 
     return(
-        <div  onClick={handleClick}>
+        <div onClick={handleClick}>
             <Simulation bodies={bodiesData} />
         </div>
     );

@@ -44,7 +44,9 @@ export default function Simulation(props){
                 
                 //coll handling
                 if (r < combRadius) {
-                    handleCollision(body,otherBody,dx,dy,r,combRadius);
+                    //handleCollision(body,otherBody,dx,dy,r,combRadius);
+                    [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
+                    [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
                 }
                 
                 
@@ -95,7 +97,7 @@ export default function Simulation(props){
     
     
     return( <div>
-        <canvas ref={canvasRef} width={800} height={800} className="sim-canvas" />
+        <canvas id="canvas" ref={canvasRef} width={800} height={800} className="sim-canvas" />
         <p style={{ whiteSpace: "nowrap", width: "100px"}}>{bodyY}</p>
     </div>
     );
