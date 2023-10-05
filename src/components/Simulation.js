@@ -11,7 +11,7 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const G = 0.5; // Grav constant
+    const G = 1; // Grav constant
     
 
     //based on newtons grav law
