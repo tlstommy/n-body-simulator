@@ -11,7 +11,7 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const G = 6.67; // Grav constant
+    const G = 2; // Grav constant
     
     function handleCollision(body, otherBody){
         if (body.mass === otherBody.mass) {
@@ -82,6 +82,16 @@ export default function Simulation(props){
 
             body.x += body.vX;
             body.y += body.vY;
+
+            //trail stuff
+            //add cur pos to trail list
+            body.trail.push({ x: body.x, y: body.y });
+
+            //trail lims
+            if (body.trail.length > 5000) {
+                body.trail.shift();
+            }
+
                      
         }
     }

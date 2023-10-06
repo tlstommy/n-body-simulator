@@ -7,11 +7,11 @@ import Simulation from './Simulation';
 export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
-        { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: 1000, staticBody: true},
-        { x: 100, y: 400, vX: 0, vY: -1.5, radius: 8, color: 'yellow', mass: 10, staticBody: false},
-        { x: 700, y: 400, vX: 0, vY: 1.5, radius: 8, color: 'green', mass: 10, staticBody: false},
-        { x: 400, y: 100, vX: 1.5, vY: 0, radius: 8, color: 'red', mass: 10, staticBody: false},
-        { x: 400, y: 700, vX: -1.5, vY: 0, radius: 8, color: 'blue', mass: 10, staticBody: false},
+        { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5000, staticBody: true, trail: []},
+        { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: 100, staticBody: false, trail: []},
+        { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: 100, staticBody: false, trail: []},
+        { x: 400, y: 200, vX: 1.5, vY: 0, radius: 5, color: 'red', mass: 100, staticBody: false, trail: []},
+        { x: 400, y: 600, vX: -1.5, vY: 0, radius: 5, color: 'blue', mass: 100, staticBody: false, trail: []},
     ]);
 
 
@@ -36,6 +36,11 @@ export default function Container(){
 
         //calc mouse velocity
         if(mouseHeldDown){
+            
+            if(endClickPos === null){
+                setEndClickPos(startClickPos);
+            }
+
             var deltaX = startClickPos.x - endClickPos.x;
             var deltaY = startClickPos.y - endClickPos.y;
         } 
@@ -57,12 +62,13 @@ export default function Container(){
         const newBody = {
             x: mouseX, 
             y: mouseY, 
-            vX: deltaX/100, 
-            vY: deltaY/100, 
+            vX: deltaX/50, 
+            vY: deltaY/50, 
             radius: 10, 
             color: 'purple', 
-            mass: 10, 
-            staticBody: false
+            mass: 100, 
+            staticBody: false,
+            trail: []
         }
 
         //add a new body
