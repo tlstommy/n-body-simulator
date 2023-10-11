@@ -11,7 +11,7 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const G = 2; // Grav constant
+    const G =2; // Grav constant
 
     const enableCollisions = false;
     
@@ -61,8 +61,14 @@ export default function Simulation(props){
                 
                 
                 //coll handling
-                if (r < combRadius && enableCollisions) {
-                    return handleCollision(body,otherBody);
+                if (r < combRadius) {
+                    if(enableCollisions){
+                        return handleCollision(body,otherBody);
+                    }else{
+                        [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
+                        [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
+                        continue;
+                    }
                 }
                 
                 

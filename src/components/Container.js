@@ -10,8 +10,7 @@ export default function Container(){
         { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5000, staticBody: true, trail: []},
         { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: 100, staticBody: false, trail: []},
         { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: 100, staticBody: false, trail: []},
-        { x: 400, y: 200, vX: 1.5, vY: 0, radius: 5, color: 'red', mass: 100, staticBody: false, trail: []},
-        { x: 400, y: 600, vX: -1.5, vY: 0, radius: 5, color: 'blue', mass: 100, staticBody: false, trail: []},
+
     ]);
 
 
