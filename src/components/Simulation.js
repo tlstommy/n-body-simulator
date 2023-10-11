@@ -12,6 +12,8 @@ export default function Simulation(props){
 
     const SIM_SPEED = 0.1;
     const G = 2; // Grav constant
+
+    const enableCollisions = false;
     
     function handleCollision(body, otherBody){
         if (body.mass === otherBody.mass) {
@@ -59,7 +61,7 @@ export default function Simulation(props){
                 
                 
                 //coll handling
-                if (r < combRadius) {
+                if (r < combRadius && enableCollisions) {
                     return handleCollision(body,otherBody);
                 }
                 
@@ -88,7 +90,7 @@ export default function Simulation(props){
             body.trail.push({ x: body.x, y: body.y });
 
             //trail lims
-            if (body.trail.length > 5000) {
+            if (body.trail.length > 1000) {
                 body.trail.shift();
             }
 

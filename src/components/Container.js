@@ -64,7 +64,7 @@ export default function Container(){
             y: mouseY, 
             vX: deltaX/50, 
             vY: deltaY/50, 
-            radius: 10, 
+            radius: 5, 
             color: 'purple', 
             mass: 100, 
             staticBody: false,
