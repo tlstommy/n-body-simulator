@@ -52,7 +52,6 @@ export default function Simulation(props){
 
                 //r = distance between the two using pyth theroy
                 const r = Math.sqrt(dx * dx + dy * dy);
-
                 const combRadius = body.radius + otherBody.radius;
                 
                 
