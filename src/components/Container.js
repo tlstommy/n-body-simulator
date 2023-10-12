@@ -7,9 +7,9 @@ import Simulation from './Simulation';
 export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
-        { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5000, staticBody: true, trail: []},
-        { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: 100, staticBody: false, trail: []},
-        { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: 100, staticBody: false, trail: []},
+        { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(1,14), staticBody: false, trail: []},
+        { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: setMassVal(5,11), staticBody: false, trail: []},
+        { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: setMassVal(5,11), staticBody: false, trail: []},
 
     ]);
 
@@ -26,8 +26,13 @@ export default function Container(){
     const handleMouseMove = (e) => {
         if(mouseHeldDown){
             setEndClickPos({ x: e.clientX, y: e.clientY });
-            
         }
+    }
+
+
+    //sets the mass by raising mass val to massmult pow
+    function setMassVal(massVal,massPow){
+        return massVal * Math.pow(10,massPow);
     }
 
 
@@ -65,7 +70,7 @@ export default function Container(){
             vY: deltaY/50, 
             radius: 5, 
             color: 'purple', 
-            mass: 100, 
+            mass: setMassVal(5,11), 
             staticBody: false,
             trail: []
         }

@@ -11,9 +11,9 @@ export default function Simulation(props){
     const [bodyY, setBodyY] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const G =2; // Grav constant
+    const G = 6.674e-11; // universal Grav constant
 
-    const enableCollisions = false;
+    const enableCollisions = true;
     
     function handleCollision(body, otherBody){
         if (body.mass === otherBody.mass) {
@@ -53,10 +53,6 @@ export default function Simulation(props){
                 //r = distance between the two using pyth theroy
                 const r = Math.sqrt(dx * dx + dy * dy);
 
-
-                
-                
-
                 const combRadius = body.radius + otherBody.radius;
                 
                 
@@ -76,8 +72,8 @@ export default function Simulation(props){
                 const force = G * ((body.mass * otherBody.mass) / (r * r));
                 
                 //multiply force by direction and add to dir
-                aX += (force * dx / r) / body.mass;
-                aY += (force * dy / r) / body.mass;
+                aX += (force / body.mass) * (dx / r);
+                aY += (force / body.mass) * (dy / r);
             }
             
         }
