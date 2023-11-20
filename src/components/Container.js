@@ -10,8 +10,8 @@ export default function Container(){
         { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(1,14), staticBody: true, trail: []},
         { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: setMassVal(5,11), staticBody: false, trail: []},
         { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: setMassVal(5,11), staticBody: false, trail: []},
-        //{ x: 400, y: 200, vX: 1.5, vY: 0, radius: 5, color: 'red', mass: setMassVal(5,11), staticBody: false, trail: []},
-        //{ x: 400, y: 600, vX: -1.5, vY: 0, radius: 5, color: 'blue', mass: setMassVal(5,11), staticBody: false, trail: []},
+        { x: 400, y: 200, vX: 1.5, vY: 0, radius: 5, color: 'red', mass: setMassVal(5,11), staticBody: false, trail: []},
+        { x: 400, y: 600, vX: -1.5, vY: 0, radius: 5, color: 'blue', mass: setMassVal(5,11), staticBody: false, trail: []},
         
     ]);
 
@@ -26,9 +26,9 @@ export default function Container(){
     }   
 
     const handleMouseMove = (e) => {
-        if(mouseHeldDown){
-            setEndClickPos({ x: e.clientX, y: e.clientY });
-        }
+        
+        setEndClickPos({ x: e.clientX, y: e.clientY });
+        
     }
 
 
@@ -42,11 +42,11 @@ export default function Container(){
 
         //calc mouse velocity
         if(mouseHeldDown){
-            
+            console.log(endClickPos)
             if(endClickPos === null){
                 setEndClickPos(startClickPos);
             }
-
+            setEndClickPos({ x: e.clientX, y: e.clientY });
             var deltaX = startClickPos.x - endClickPos.x;
             var deltaY = startClickPos.y - endClickPos.y;
         } 
@@ -66,8 +66,8 @@ export default function Container(){
 
         //create a new grav body
         const newBody = {
-            x: mouseX, 
-            y: mouseY, 
+            x: mouseX+deltaX, 
+            y: mouseY+deltaY, 
             vX: deltaX/50, 
             vY: deltaY/50, 
             radius: 5, 
@@ -82,7 +82,7 @@ export default function Container(){
 
         setMouseHeldDown(false);
         setStartClickPos(null);
-        setEndClickPos(null);
+        //setEndClickPos(null);
     }
     
 

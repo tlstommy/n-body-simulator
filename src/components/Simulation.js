@@ -8,12 +8,13 @@ export default function Simulation(props){
     const canvasRef = useRef(null);
     
 
-    const [bodyY, setBodyY] = useState(); 
+    const [bodyText, setBodyText] = useState(); 
 
     const SIM_SPEED = 0.1;
     const G = 6.674e-11; // universal Grav constant
 
     const enableCollisions = true;
+    
     
     function handleCollision(body, otherBody){
         if (body.mass === otherBody.mass) {
@@ -97,11 +98,13 @@ export default function Simulation(props){
 
                      
         }
+        //setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
     }
 
     const animationRef = useRef();
 
     useEffect(() => {
+        
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
@@ -155,7 +158,7 @@ export default function Simulation(props){
     
     return( <div>
         <canvas id="canvas" ref={canvasRef} width={800} height={800} className="sim-canvas" />
-        <p style={{ whiteSpace: "nowrap", width: "100px"}}>{bodyY}</p>
+        <p style={{ whiteSpace: "nowrap", width: "100px"}}>{bodyText}</p>
     </div>
     );
 }
