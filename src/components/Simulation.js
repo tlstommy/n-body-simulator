@@ -11,6 +11,7 @@ export default function Simulation(props){
     const [bodyText, setBodyText] = useState(); 
 
     const SIM_SPEED = 0.1;
+    const EPSILON = 1e-10; //softening param
     const G = 6.674e-11; // universal Grav constant
 
     const enableCollisions = true;
@@ -51,8 +52,8 @@ export default function Simulation(props){
                 const dx = otherBody.x - body.x;
                 const dy = otherBody.y - body.y;
 
-                //r = distance between the two using pyth theroy
-                const r = Math.sqrt(dx * dx + dy * dy);
+                //r = distance between the two using pyth theroy plus the softening param squared
+                const r = Math.sqrt(dx * dx + dy * dy + EPSILON * EPSILON);
                 const combRadius = body.radius + otherBody.radius;
                 
                 
