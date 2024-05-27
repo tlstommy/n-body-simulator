@@ -14,7 +14,8 @@ export default function Simulation(props){
     const EPSILON = 1e-10; //softening param
     const G = 6.674e-11; // universal Grav constant
 
-    const enableCollisions = true;
+    const enableCollisions = false;
+    const collisonType = "bounce"
     
     
     function handleCollision(body, otherBody){
@@ -60,10 +61,18 @@ export default function Simulation(props){
                 //coll handling
                 if (r < combRadius) {
                     if(enableCollisions){
-                        return handleCollision(body,otherBody);
+
+                        if(collisonType === "bounce"){
+                            [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
+                            [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
+                            continue;
+                        }
+                        else{
+                            return handleCollision(body,otherBody);
+                        }
+                        
                     }else{
-                        [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
-                        [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
+                        
                         continue;
                     }
                 }

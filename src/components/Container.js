@@ -8,10 +8,10 @@ export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
         { x: 400, y: 400, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(1,14), staticBody: true, trail: []},
-        { x: 200, y: 400, vX: 0, vY: -1.5, radius: 5, color: 'yellow', mass: setMassVal(5,11), staticBody: false, trail: []},
-        { x: 600, y: 400, vX: 0, vY: 1.5, radius: 5, color: 'green', mass: setMassVal(5,11), staticBody: false, trail: []},
-        { x: 400, y: 200, vX: 1.5, vY: 0, radius: 5, color: 'red', mass: setMassVal(5,11), staticBody: false, trail: []},
-        { x: 400, y: 600, vX: -1.5, vY: 0, radius: 5, color: 'blue', mass: setMassVal(5,11), staticBody: false, trail: []},
+        { x: 250, y: 200, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(1,14), staticBody: true, trail: []},   
+        { x: 550, y: 200, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(1,14), staticBody: true, trail: []},
+
+        
         
     ]);
 
