@@ -1,2 +1,2 @@
 # n-body-simulator
-A simulator of the nbody problem
+A simulator of the nbody problem.
