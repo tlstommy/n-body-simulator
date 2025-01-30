@@ -11,8 +11,8 @@ export default function Simulation(props){
     const [bodyText, setBodyText] = useState(); 
 
     const SIM_SPEED = 0.1;
-    const EPSILON = 1e-10; //softening param
-    const G = 6.674e-11; // universal Grav constant
+    const EPSILON = 1e6; //softening param
+    const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
     const collisonType = "bounce"
@@ -167,7 +167,7 @@ export default function Simulation(props){
     
     
     return( <div>
-        <canvas id="canvas" ref={canvasRef} width={800} height={800} className="sim-canvas" />
+        <canvas id="canvas" ref={canvasRef} width={1800} height={1000} className="sim-canvas" />
         <p style={{ whiteSpace: "nowrap", width: "100px"}}>{bodyText}</p>
     </div>
     );
