@@ -10,7 +10,7 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const SIM_SPEED = 0.1;
+    const SIM_SPEED = 0.0001;
     const EPSILON = 1e6; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
@@ -52,9 +52,8 @@ export default function Simulation(props){
         }
     }
 
-
     //based on newtons grav law
-    function updateBodies(body, bodies) {
+    function updateBody(body, bodies) {
         
         
         //x and y accel init
@@ -69,7 +68,7 @@ export default function Simulation(props){
                 const dy = otherBody.y - body.y;
 
                 //r = distance between the two bodies
-                const r = dx ** 2 + dy ** 2;
+                const r = Math.sqrt(dx**2 + dy**2);
                 
                 const combRadius = body.radius + otherBody.radius;
                 
@@ -81,18 +80,32 @@ export default function Simulation(props){
                         
                         handleCollision(body,otherBody);
                         
+                        
+                    }else{
+                        
+                        continue;
                     }
                 }
                 
                 
                 //Newton's law of universal gravitation to calc F, the gravitational force acting between the two objects
-                const force = (G * body.mass * otherBody.mass) / (Math.max(r,EPSILON));
-                const accelerationFactor = force/body.mass;
+                
+                
+                const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
+
+                console.log(`Force between ${body.id} and ${otherBody.id}:`, force);
+                console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
+                
+                const accel = force / body.mass;
+                //multiply acell force by direction and add to dir
+                aX += accel * (dx / r);
+                aY += accel * (dy / r);
+                
+                
+                console.log(`dx: ${dx}, dy: ${dy}, r: ${r}`);
+                console.log(`ax: ${aX}, ay: ${aY}`);
 
 
-                //multiply force by direction and add to dir
-                aX += accelerationFactor * (dx / Math.sqrt(r));
-                aY += accelerationFactor * (dy / Math.sqrt(r));
             }
             
         }
@@ -140,7 +153,7 @@ export default function Simulation(props){
         
             // Now draw the updated bodies
             bodies.forEach(body => {
-                const collsionData = updateBodies(body, bodies);
+                const collsionData = updateBody(body, bodies);
                 
                 GravBody({ ...body, ctx });
                 
@@ -166,7 +179,7 @@ export default function Simulation(props){
         }
 
         animate();
-        //chatgpt helped with this part
+        
         return () => {
             if (animationRef.current) {
                 cancelAnimationFrame(animationRef.current);
