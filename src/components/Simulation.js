@@ -10,8 +10,8 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const SIM_SPEED = 0.0001;
-    const EPSILON = 1e6; //softening param
+    const SIM_SPEED = 0.01;
+    const EPSILON = 1e7; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
