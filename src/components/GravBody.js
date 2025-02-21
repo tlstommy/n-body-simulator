@@ -2,7 +2,7 @@
 export default function GravBody(props){
 
     const { x, y, vX, vY, radius, color, mass, staticBody, ctx } = props;
-
+    if (!ctx) return null;
     //draw trails
     if (ctx && props.trail) {
         ctx.beginPath();

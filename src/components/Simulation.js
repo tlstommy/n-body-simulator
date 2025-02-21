@@ -15,31 +15,46 @@ export default function Simulation(props){
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
-    const collisonType = "bounce"
+    const collisionType = "bounce"
     
     
-    function handleCollision(body, otherBody){
-        if (body.mass === otherBody.mass) {
-            return {
-                type: "fragment",
-                collidors: [body, otherBody]
-            }; 
-        }
-        if (body.mass > otherBody.mass) {
-            return {
-                type: "",
-                collidors: [otherBody]
-            }; 
-        }else{
-            return {
-                type: "",
-                collidors: [body]
-            }; 
+    function handleCollision(body, otherBody) {
+        const dx = otherBody.x - body.x;
+        const dy = otherBody.y - body.y;
+        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+        const overlap = body.radius + otherBody.radius - distance;
+
+        if (overlap > 0) {
+            const correction = overlap / 2;
+            const normalX = dx / distance;
+            const normalY = dy / distance;
+            body.x -= normalX * correction;
+            body.y -= normalY * correction;
+            otherBody.x += normalX * correction;
+            otherBody.y += normalY * correction;
+
+            if (collisionType === "bounce") {
+                [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
+                [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
+            } else if (collisionType === "elastic") {
+                const totalMass = body.mass + otherBody.mass;
+
+                const newVX1 = (body.vX * (body.mass - otherBody.mass) + 2 * otherBody.mass * otherBody.vX) / totalMass;
+                const newVY1 = (body.vY * (body.mass - otherBody.mass) + 2 * otherBody.mass * otherBody.vY) / totalMass;
+                const newVX2 = (otherBody.vX * (otherBody.mass - body.mass) + 2 * body.mass * body.vX) / totalMass;
+                const newVY2 = (otherBody.vY * (otherBody.mass - body.mass) + 2 * body.mass * body.vY) / totalMass;
+
+                body.vX = newVX1;
+                body.vY = newVY1;
+                otherBody.vX = newVX2;
+                otherBody.vY = newVY2;
+            }
         }
     }
 
+
     //based on newtons grav law
-    function updateBody(body, bodies) {
+    function updateBodies(body, bodies) {
         
         
         //x and y accel init
@@ -53,8 +68,9 @@ export default function Simulation(props){
                 const dx = otherBody.x - body.x;
                 const dy = otherBody.y - body.y;
 
-                //r = distance between the two using pyth theroy plus the softening param squared
-                const r = Math.sqrt(dx * dx + dy * dy + EPSILON * EPSILON);
+                //r = distance between the two bodies
+                const r = dx ** 2 + dy ** 2;
+                
                 const combRadius = body.radius + otherBody.radius;
                 
                 
@@ -62,28 +78,21 @@ export default function Simulation(props){
                 if (r < combRadius) {
                     if(enableCollisions){
 
-                        if(collisonType === "bounce"){
-                            [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
-                            [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
-                            continue;
-                        }
-                        else{
-                            return handleCollision(body,otherBody);
-                        }
                         
-                    }else{
+                        handleCollision(body,otherBody);
                         
-                        continue;
                     }
                 }
                 
                 
                 //Newton's law of universal gravitation to calc F, the gravitational force acting between the two objects
-                const force = G * ((body.mass * otherBody.mass) / (r * r));
-                
+                const force = (G * body.mass * otherBody.mass) / (Math.max(r,EPSILON));
+                const accelerationFactor = force/body.mass;
+
+
                 //multiply force by direction and add to dir
-                aX += (force / body.mass) * (dx / r);
-                aY += (force / body.mass) * (dy / r);
+                aX += accelerationFactor * (dx / Math.sqrt(r));
+                aY += accelerationFactor * (dy / Math.sqrt(r));
             }
             
         }
@@ -131,7 +140,7 @@ export default function Simulation(props){
         
             // Now draw the updated bodies
             bodies.forEach(body => {
-                const collsionData = updateBody(body, bodies);
+                const collsionData = updateBodies(body, bodies);
                 
                 GravBody({ ...body, ctx });
                 
