@@ -7,11 +7,15 @@ import Simulation from './Simulation';
 export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
-        { x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 900, y: 215, vX: 3, vY: 0, radius: 5, color: 'blue', mass: setMassVal(7,20), staticBody: false, trail: []},
-        //{ x: 900, y: 750, vX: 0, vY: 0, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 600, y: 250, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 1200, y: 250, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        
+        //2body
+        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 900, y: 215, vX: 3, vY: 0, radius: 5, color: 'blue', mass: setMassVal(7,20), staticBody: false, trail: []},
+        
+        //3body
+        { x: 900, y: 750, vX: 0, vY: 0, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 600, y: 250, vX: 0, vY:0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 1200, y: 250, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
         //
         
 

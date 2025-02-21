@@ -93,17 +93,17 @@ export default function Simulation(props){
                 
                 const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
 
-                console.log(`Force between ${body.id} and ${otherBody.id}:`, force);
-                console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
+                //console.log(`Force between ${body.id} and ${otherBody.id}:`, force);
+                //console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
                 
-                const accel = force / body.mass;
+                
                 //multiply acell force by direction and add to dir
-                aX += accel * (dx / r);
-                aY += accel * (dy / r);
+                aX += (force / body.mass) * (dx / r);
+                aY += (force / body.mass) * (dy / r);
                 
                 
-                console.log(`dx: ${dx}, dy: ${dy}, r: ${r}`);
-                console.log(`ax: ${aX}, ay: ${aY}`);
+                //console.log(`dx: ${dx}, dy: ${dy}, r: ${r}`);
+                //console.log(`ax: ${aX}, ay: ${aY}`);
 
 
             }
