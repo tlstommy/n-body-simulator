@@ -10,11 +10,12 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const SIM_SPEED = 0.01;
+    const TRAILS = false;
+    const SIM_SPEED = 0.1;
     const EPSILON = 1e7; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = false;
+    const enableCollisions = true
     const collisionType = "bounce"
     
     
@@ -28,10 +29,14 @@ export default function Simulation(props){
             const correction = overlap / 2;
             const normalX = dx / distance;
             const normalY = dy / distance;
-            body.x -= normalX * correction;
-            body.y -= normalY * correction;
-            otherBody.x += normalX * correction;
-            otherBody.y += normalY * correction;
+            if(!body.staticBody){
+                body.x -= normalX * correction;
+                body.y -= normalY * correction;
+            }
+            if(!otherBody.staticBody){
+                otherBody.x += normalX * correction;
+                otherBody.y += normalY * correction;
+            }
 
             if (collisionType === "bounce") {
                 [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
@@ -113,21 +118,24 @@ export default function Simulation(props){
 
         if(!body.staticBody){
             
-            body.vX += aX * SIM_SPEED;
-            body.vY += aY * SIM_SPEED;
+            //caclulate velocity using Verlet integration
+            body.vX += 0.5 * aX * SIM_SPEED;
+            body.vY += 0.5 * aY * SIM_SPEED;
+            body.x += body.vX * SIM_SPEED;
+            body.y += body.vY * SIM_SPEED;
+            body.vX += 0.5 * aX * SIM_SPEED;
+            body.vY += 0.5 * aY * SIM_SPEED;
 
-            body.x += body.vX;
-            body.y += body.vY;
+            if(TRAILS){
+                //trail stuff
+                //add cur pos to trail list
+                body.trail.push({ x: body.x, y: body.y });
 
-            //trail stuff
-            //add cur pos to trail list
-            body.trail.push({ x: body.x, y: body.y });
-
-            //trail lims
-            if (body.trail.length > 1000) {
-                body.trail.shift();
+                //trail lims
+                if (body.trail.length > 1000) {
+                    body.trail.shift();
+                }
             }
-
                      
         }
         //setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
