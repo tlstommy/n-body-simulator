@@ -10,7 +10,7 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = true;
+    const TRAILS = false;
     const SIM_SPEED = 0.1;
     const EPSILON = 1e7; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
@@ -57,64 +57,64 @@ export default function Simulation(props){
         }
     }
 
-    //based on newtons grav law
-    function updateBody(body, bodies) {
-        
-        
+
+    //calculate the Gravitational acceleration for a body based off the other bodies  https://en.wikipedia.org/wiki/Gravitational_acceleration
+    function calculateGravAccelelration(body, bodies){
         //x and y accel init
         let aX = 0;
         let aY = 0;
-
         for (const otherBody of bodies) {
             if (body !== otherBody) {
-                const bodyData = body;
+    
+
                 //pos diffs for each body to calculate r 
-                const dx = otherBody.x - body.x;
-                const dy = otherBody.y - body.y;
+                const deltaX = otherBody.x - body.x;
+                const deltaY = otherBody.y - body.y;
 
                 //r = distance between the two bodies
-                const r = Math.sqrt(dx**2 + dy**2);
+                const r = Math.sqrt(deltaX**2 + deltaY**2);
                 
-                const combRadius = body.radius + otherBody.radius;
-                
-                
-                //coll handling
-                if (r < combRadius) {
-                    if(enableCollisions){
+                const combRadius = body.radius + otherBody.radi
 
-                        
-                        handleCollision(body,otherBody);
-                        
-                        
-                    }else{
-                        
-                        continue;
-                    }
+                //coll handling here
+                if (r < (body.radius + otherBody.radius) && enableCollisions) {
+                    handleCollision(body, otherBody);
+                    continue;
                 }
-                
-                
                 //Newton's law of universal gravitation to calc F, the gravitational force acting between the two objects
                 
                 
-                const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
+                //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
+                const force = G * (otherBody.mass) / (r ** 2 + EPSILON ** 2);
 
                 //console.log(`Force between ${body.id} and ${otherBody.id}:`, force);
                 //console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
                 
                 
                 //multiply acell force by direction and add to dir
-                aX += (force / body.mass) * (dx / r);
-                aY += (force / body.mass) * (dy / r);
+                aX += force * (deltaX / r);
+                aY += force * (deltaY / r);
                 
                 
-                //console.log(`dx: ${dx}, dy: ${dy}, r: ${r}`);
-                //console.log(`ax: ${aX}, ay: ${aY}`);
-
+                //console.log(`dX: ${deltaX}, dY: ${deltaY}, r: ${r}`);
+                //console.log(`aX: ${aX}, aY: ${aY}`);
 
             }
-            
         }
+    
+        return { aX, aY };
 
+
+    }
+
+    //based on newtons grav law
+    function updateBody(body, bodies) {
+        
+        //no need to check static bodies
+        if (body.staticBody) return; 
+
+        //gett accel vals 
+        const { aX, aY } = calculateGravAccelelration(body, bodies);
 
         if(!body.staticBody){
             
