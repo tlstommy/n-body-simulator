@@ -10,7 +10,7 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = false;
+    const TRAILS = true;
     const SIM_SPEED = 0.1;
     const EPSILON = 1e7; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
@@ -121,10 +121,16 @@ export default function Simulation(props){
             //caclulate velocity using leapfrog integration
             body.vX += 0.5 * aX * SIM_SPEED;
             body.vY += 0.5 * aY * SIM_SPEED;
+
             body.x += body.vX * SIM_SPEED;
             body.y += body.vY * SIM_SPEED;
-            body.vX += 0.5 * aX * SIM_SPEED;
-            body.vY += 0.5 * aY * SIM_SPEED;
+            ///second half of lf 
+            const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
+        
+
+            // Final velocity update
+            body.vX += 0.5 * newAX * SIM_SPEED;
+            body.vY += 0.5 * newAY * SIM_SPEED;
 
             if(TRAILS){
                 //trail stuff
