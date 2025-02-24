@@ -10,13 +10,13 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = false;
+    const TRAILS = true;
     const SIM_SPEED = 0.1;
     const EPSILON = 1e7; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = true
-    const collisionType = "bounce"
+    const enableCollisions = false;
+    const collisionType = "bounce";
     
     
     function handleCollision(body, otherBody) {
@@ -118,7 +118,7 @@ export default function Simulation(props){
 
         if(!body.staticBody){
             
-            //caclulate velocity using Verlet integration
+            //caclulate velocity using leapfrog integration
             body.vX += 0.5 * aX * SIM_SPEED;
             body.vY += 0.5 * aY * SIM_SPEED;
             body.x += body.vX * SIM_SPEED;
