@@ -92,7 +92,7 @@ export default function Container(){
             vY: deltaY * velocityFactor, 
             radius: 5, 
             color: colors[randomIndex],
-            mass: 7e24,
+            mass: 7e20,
             staticBody: false,
             trail: []
         };

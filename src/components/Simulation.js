@@ -74,6 +74,8 @@ export default function Simulation(props){
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
                 let r2 = deltaX ** 2 + deltaY ** 2;
+                r2 = Math.max(r2, 1); // Prevents explosion in force at small r
+
                 let r = Math.sqrt(r2);
                 const combRadius = body.radius + otherBody.radius;
 
@@ -84,6 +86,7 @@ export default function Simulation(props){
                     }
                     //r2 = (r + EPSILON) ** 2
                     r2 += EPSILON*EPSILON;
+                    
                     r = Math.sqrt(r2);
                     //continue;
                 }
@@ -96,8 +99,8 @@ export default function Simulation(props){
                 
                 //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
                 const force = G * (otherBody.mass) / (r2);
-
-                //console.log(Force between ${body.id} and ${otherBody.id}:, force);
+                
+                console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
                 //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
                 
                 
