@@ -11,8 +11,8 @@ export default function Simulation(props){
     const [bodyText, setBodyText] = useState(); 
 
     const TRAILS = true;
-    const SIM_SPEED = 0.1;
-    const EPSILON = 1e7; //softening param
+    const SIM_SPEED = 1e-6;
+    const EPSILON = 1e4; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
@@ -72,23 +72,32 @@ export default function Simulation(props){
                 const deltaY = otherBody.y - body.y;
 
                 //r = distance between the two bodies
-                const r = Math.sqrt(deltaX**2 + deltaY**2);
-                
-                const combRadius = body.radius + otherBody.radi
+                //const r = Math.sqrt(deltaX**2 + deltaY**2);
+                let r2 = deltaX ** 2 + deltaY ** 2;
+                let r = Math.sqrt(r2);
+                const combRadius = body.radius + otherBody.radius;
 
                 //coll handling here
-                if (r < (body.radius + otherBody.radius) && enableCollisions) {
-                    handleCollision(body, otherBody);
-                    continue;
+                if (r < combRadius) {
+                    if(enableCollisions){
+                        handleCollision(body, otherBody);
+                    }
+                    r2 += EPSILON*EPSILON;
+                    r = Math.sqrt(r2);
+                    //continue;
                 }
+
+
+                
+                
                 //Newton's law of universal gravitation to calc F, the gravitational force acting between the two objects
                 
                 
                 //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
-                const force = G * (otherBody.mass) / (r ** 2 + EPSILON ** 2);
+                const force = G * (otherBody.mass) / (r2);
 
-                //console.log(`Force between ${body.id} and ${otherBody.id}:`, force);
-                //console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
+                //console.log(Force between ${body.id} and ${otherBody.id}:, force);
+                //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
                 
                 
                 //multiply acell force by direction and add to dir
@@ -96,8 +105,8 @@ export default function Simulation(props){
                 aY += force * (deltaY / r);
                 
                 
-                //console.log(`dX: ${deltaX}, dY: ${deltaY}, r: ${r}`);
-                //console.log(`aX: ${aX}, aY: ${aY}`);
+                //console.log(dX: ${deltaX}, dY: ${deltaY}, r: ${r});
+                //console.log(aX: ${aX}, aY: ${aY});
 
             }
         }
@@ -148,7 +157,7 @@ export default function Simulation(props){
         }
                      
         
-        //setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
+        setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
     }
 
     const animationRef = useRef();
@@ -162,7 +171,7 @@ export default function Simulation(props){
         if (animationRef.current) {
             cancelAnimationFrame(animationRef.current);
         }
-        
+        let frameCount = 0;
         //Anim bodies
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -192,6 +201,7 @@ export default function Simulation(props){
                     bodies.splice(index, 1);
                 }
             });
+            
 
             animationRef.current = requestAnimationFrame(animate);
         }
