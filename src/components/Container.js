@@ -9,15 +9,15 @@ export default function Container(){
     const [bodiesData, setBodiesData] = useState([
         
         //2body
-        { x: 900, y: 415, vX: 0, vY: 0, radius: 0, color: 'white', mass: setMassVal(6,24), staticBody: true, trail: [],id: 'parent'},
-        //{ x: 900, y: 215, vX: 10e5, vY: 0, radius: 5, color: 'blue', mass: setMassVal(6,20), staticBody: false, trail: [],id: 'moon'},
+        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(6,24), staticBody: true, trail: [],id: 'parent'},
+        //{ x: 900, y: 215, vX: 10, vY: 0, radius: 5, color: 'blue', mass: setMassVal(6,20), staticBody: false, trail: [],id: 'moon'},
         
         //3body
         { x: 900, y: 750, vX: 10, vY: -10, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 600, y: 250, vX: 0, vY:10, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        {x: 600, y: 250, vX: 0, vY:10, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
         { x: 1200, y: 250, vX: -10, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
         //
-        
+        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 2, color: 'white', mass: setMassVal(6,23), staticBody: true, trail: [],id: 'parent'},
 
         
         
@@ -83,7 +83,7 @@ export default function Container(){
         
         const velocityFactor = 0.5;
         const randomIndex = Math.floor(Math.random() * colors.length);
-        const randomMass = setMassVal(Math.random() * 10 + 1, Math.floor(Math.random() * (25 - 8) + 8));
+        
         //make it 
         const newBody = {
             x: mouseX, 
@@ -92,7 +92,7 @@ export default function Container(){
             vY: deltaY * velocityFactor, 
             radius: 5, 
             color: colors[randomIndex],
-            mass: randomMass,
+            mass: 6e21,
             staticBody: false,
             trail: []
         };

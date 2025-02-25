@@ -107,6 +107,10 @@ export default function Simulation(props){
 
     }
 
+    //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+    //function RK4
+
+
     //based on newtons grav law
     function updateBody(body, bodies) {
         
@@ -116,34 +120,34 @@ export default function Simulation(props){
         //gett accel vals 
         const { aX, aY } = calculateGravAccelelration(body, bodies);
 
-        if(!body.staticBody){
+       
             
-            //caclulate velocity using leapfrog integration
-            body.vX += 0.5 * aX * SIM_SPEED;
-            body.vY += 0.5 * aY * SIM_SPEED;
+        //caclulate velocity using leapfrog integration
+        body.vX += 0.5 * aX * SIM_SPEED;
+        body.vY += 0.5 * aY * SIM_SPEED;
 
-            body.x += body.vX * SIM_SPEED;
-            body.y += body.vY * SIM_SPEED;
-            ///second half of lf 
-            const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
-        
+        body.x += body.vX * SIM_SPEED;
+        body.y += body.vY * SIM_SPEED;
+        ///second half of lf 
+        const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
+    
 
-            // Final velocity update
-            body.vX += 0.5 * newAX * SIM_SPEED;
-            body.vY += 0.5 * newAY * SIM_SPEED;
+        // Final velocity update
+        body.vX += 0.5 * newAX * SIM_SPEED;
+        body.vY += 0.5 * newAY * SIM_SPEED;
 
-            if(TRAILS){
-                //trail stuff
-                //add cur pos to trail list
-                body.trail.push({ x: body.x, y: body.y });
+        if(TRAILS){
+            //trail stuff
+            //add cur pos to trail list
+            body.trail.push({ x: body.x, y: body.y });
 
-                //trail lims
-                if (body.trail.length > 1000) {
-                    body.trail.shift();
-                }
+            //trail lims
+            if (body.trail.length > 1000) {
+                body.trail.shift();
             }
-                     
         }
+                     
+        
         //setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
     }
 
