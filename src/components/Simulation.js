@@ -82,6 +82,7 @@ export default function Simulation(props){
                     if(enableCollisions){
                         handleCollision(body, otherBody);
                     }
+                    //r2 = (r + EPSILON) ** 2
                     r2 += EPSILON*EPSILON;
                     r = Math.sqrt(r2);
                     //continue;
@@ -157,7 +158,7 @@ export default function Simulation(props){
         }
                      
         
-        setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
+        //setBodyText("G: " + G + ", Sim Speed: " + SIM_SPEED + " " + Math.sqrt((aX * aX) + (aY * aY)));
     }
 
     const animationRef = useRef();
