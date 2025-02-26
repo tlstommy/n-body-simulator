@@ -12,7 +12,7 @@ export default function Simulation(props){
 
     const TRAILS = true;
     const SIM_SPEED = 1e-6;
-    const EPSILON = 1e4; //softening param
+    const EPSILON = 1e-2; //softening param
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
@@ -73,8 +73,8 @@ export default function Simulation(props){
 
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
-                let r2 = deltaX ** 2 + deltaY ** 2;
-                r2 = Math.max(r2, 1); // Prevents explosion in force at small r
+                let r2 = deltaX ** 2 + deltaY ** 2 + EPSILON;
+                //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
                 let r = Math.sqrt(r2);
                 const combRadius = body.radius + otherBody.radius;
@@ -85,10 +85,10 @@ export default function Simulation(props){
                         handleCollision(body, otherBody);
                     }
                     //r2 = (r + EPSILON) ** 2
-                    r2 += EPSILON*EPSILON;
+                    //r2 += EPSILON*EPSILON;
                     
-                    r = Math.sqrt(r2);
-                    //continue;
+                    //r = Math.sqrt(r2);
+                    continue;
                 }
 
 
@@ -98,15 +98,20 @@ export default function Simulation(props){
                 
                 
                 //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
-                const force = G * (otherBody.mass) / (r2);
-                
-                console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
+
+                var denom = r2
+
+                const force = G * (body.mass * otherBody.mass) / (denom);
+                //console.log(`${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
+
+                //console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
                 //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
                 
-                
+                //get the accel from force
+                const acceleration = force / body.mass;
                 //multiply acell force by direction and add to dir
-                aX += force * (deltaX / r);
-                aY += force * (deltaY / r);
+                aX += acceleration * (deltaX / r);
+                aY += acceleration * (deltaY / r);
                 
                 
                 //console.log(dX: ${deltaX}, dY: ${deltaY}, r: ${r});
@@ -155,7 +160,7 @@ export default function Simulation(props){
             body.trail.push({ x: body.x, y: body.y });
 
             //trail lims
-            if (body.trail.length > 1000) {
+            if (body.trail.length > 5000) {
                 body.trail.shift();
             }
         }
