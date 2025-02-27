@@ -16,7 +16,7 @@ export default function Simulation(props){
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
-    const collisionType = "bounce";
+    const collisionType = "elastic";
     
     
     function handleCollision(body, otherBody) {
@@ -56,7 +56,13 @@ export default function Simulation(props){
             }
         }
     }
+    
 
+
+
+
+    
+    
 
     //calculate the Gravitational acceleration for a body based off the other bodies  https://en.wikipedia.org/wiki/Gravitational_acceleration
     function calculateGravAccelelration(body, bodies){
@@ -77,6 +83,10 @@ export default function Simulation(props){
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
                 let r = Math.sqrt(r2);
+                console.log(r);
+                console.log(EPSILON);
+                console.log("")
+                
                 const combRadius = body.radius + otherBody.radius;
 
                 //coll handling here
@@ -84,11 +94,13 @@ export default function Simulation(props){
                     if(enableCollisions){
                         handleCollision(body, otherBody);
                     }
+                    //console.log("hit")
+                    continue;
                     //r2 = (r + EPSILON) ** 2
                     //r2 += EPSILON*EPSILON;
                     
                     //r = Math.sqrt(r2);
-                    continue;
+                    //continue;
                 }
 
 
@@ -211,7 +223,8 @@ export default function Simulation(props){
                 }
             });
             
-
+            
+            
             animationRef.current = requestAnimationFrame(animate);
         }
 

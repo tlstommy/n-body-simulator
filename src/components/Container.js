@@ -9,8 +9,11 @@ export default function Container(){
     const [bodiesData, setBodiesData] = useState([
         
         //2body
-        { x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: setMassVal(6,25), staticBody: true, trail: []},
-        { x: 900, y: 215, vX: 4000000, vY: 0, radius: 5, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: true, trail: []},
+        { x: 900, y: 215, vX: 1000000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: []},
+        
+        { x: 900, y: 615, vX: -1000000, vY: 0, radius: 5, color: 'red', mass: 7.34767309e22, staticBody: false, trail: []},
+        //{ x: 900, y: 515, vX: -800000, vY: 0, radius: 5, color: 'red', mass: setMassVal(2,24), staticBody: false, trail: []},
         //3body
         //{ x: 900, y: 750, vX: 0, vY: 100, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
         //{ x: 600, y: 250, vX: 0, vY:-100, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
@@ -81,7 +84,7 @@ export default function Container(){
         
         let i = Math.floor(Math.random() * colors.length);
         
-        const velocityFactor = 10;
+        const velocityFactor = 1e4;
         const randomIndex = Math.floor(Math.random() * colors.length);
         
         //make it 
@@ -92,7 +95,7 @@ export default function Container(){
             vY: deltaY * velocityFactor, 
             radius: 5, 
             color: colors[randomIndex],
-            mass: 6e24,
+            mass: 2e10,
             staticBody: false,
             trail: []
         };
