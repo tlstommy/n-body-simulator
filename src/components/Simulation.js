@@ -10,13 +10,14 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = true;
+    const TRAILS = false;
+    const PHYSICS_MARKERS = false;
     const SIM_SPEED = 1e-6;
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
-    const collisionType = "elastic";
+    const collisionType = "elastic1";
     
     
     function handleCollision(body, otherBody) {
@@ -42,6 +43,9 @@ export default function Simulation(props){
                 otherBody.x += normalX * correction;
                 otherBody.y += normalY * correction;
             }
+
+            //console.log(body);
+            
 
             if (collisionType === "bounce") {
                 [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
@@ -208,8 +212,8 @@ export default function Simulation(props){
             // Now draw the updated bodies
             bodies.forEach(body => {
                 const collsionData = updateBody(body, bodies);
-                
-                GravBody({ ...body, ctx });
+                const { aX, aY } = calculateGravAccelelration(body, bodies);
+                GravBody({ ...body, ctx, aX, aY, showPhysicsMarkers: PHYSICS_MARKERS  });
                 
                 if(collsionData){
                     if (collsionData.type === "fragment") {
@@ -240,6 +244,7 @@ export default function Simulation(props){
             if (animationRef.current) {
                 cancelAnimationFrame(animationRef.current);
             }
+            
         };
     }, [bodies]);
     
