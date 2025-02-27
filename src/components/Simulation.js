@@ -12,7 +12,7 @@ export default function Simulation(props){
 
     const TRAILS = true;
     const SIM_SPEED = 1e-6;
-    const EPSILON = 1e-2; //softening param
+    const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
     const enableCollisions = false;
@@ -21,10 +21,15 @@ export default function Simulation(props){
     
     function handleCollision(body, otherBody) {
         const dx = otherBody.x - body.x;
+        //console.log(dx);
         const dy = otherBody.y - body.y;
-        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+        //console.log(dy);
+        const distance = Math.ceil(Math.sqrt(dx ** 2 + dy ** 2));
+        //console.log(distance);
         const overlap = body.radius + otherBody.radius - distance;
+        console.log(body)
 
+        
         if (overlap > 0) {
             const correction = overlap / 2;
             const normalX = dx / distance;
@@ -79,18 +84,19 @@ export default function Simulation(props){
 
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
-                let r2 = deltaX ** 2 + deltaY ** 2 + EPSILON;
+                let r2 = deltaX ** 2 + deltaY ** 2;
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
-                let r = Math.sqrt(r2);
-                console.log(r);
-                console.log(EPSILON);
-                console.log("")
+                let r = Math.sqrt(r2 + EPSILON);
+                //console.log(r);
+                //console.log(EPSILON);
+                //console.log("")
                 
                 const combRadius = body.radius + otherBody.radius;
 
                 //coll handling here
-                if (r < combRadius) {
+                
+                if (Math.ceil(r) < combRadius) {
                     if(enableCollisions){
                         handleCollision(body, otherBody);
                     }
