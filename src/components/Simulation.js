@@ -21,6 +21,15 @@ export default function Simulation(props){
     
     
     function handleCollision(body, otherBody) {
+        
+        //var setup
+        const x1 = { x: body.x, y: body.y };
+        const x2 = { x: otherBody.x, y: otherBody.y };
+
+        const v1 = { x: body.vX, y: body.vY };
+        const v2 = { x: otherBody.vX, y: otherBody.vY };
+
+
         const dx = otherBody.x - body.x;
         //console.log(dx);
         const dy = otherBody.y - body.y;
