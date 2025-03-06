@@ -105,7 +105,7 @@ export default function Container(){
             vY: deltaY * velocityFactor, 
             radius: 5, 
             color: colors[randomIndex],
-            mass: 6e20,
+            mass: 6e1,
             staticBody: false,
             trail: [],
             id: "launchbody"

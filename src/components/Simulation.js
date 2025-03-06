@@ -16,8 +16,8 @@ export default function Simulation(props){
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = false;
-    const collisionType = "bounce";
+    const enableCollisions = true;
+    const collisionType = "elastic";
     
     
     function handleCollision(body, otherBody) {
@@ -56,14 +56,9 @@ export default function Simulation(props){
 
 
             //move objects
-            if(!body.staticBody){
-                body.x -= normalX * correction;
-                body.y -= normalY * correction;
-            }
-            if(!otherBody.staticBody){
-                otherBody.x += normalX * correction;
-                otherBody.y += normalY * correction;
-            }
+            
+
+            
 
             //console.log(body);
             
@@ -78,13 +73,31 @@ export default function Simulation(props){
                 //https://en.wikipedia.org/wiki/Elastic_collision
                 //dot product of rel velocity and the normal coll vectors
                 const dp = (dvX * normalX + dvY * normalY);    
-                
+                console.log(dp)
+                //if (dp > 0) return;
+                //
+                const v1 = (2 * otherBody.mass / combMass) * dp / distanceSquare;
+                const v2 = (2 * body.mass / combMass) * dp / distanceSquare;
 
-                body.vX -= ((2 * otherBody.mass) / combMass) * dp * normalX;
-                body.vY -= ((2 * otherBody.mass) / combMass) * dp * normalY;
+                //from wiki
+                //v`1 = v1 - (2m_2/(m1+m2) * (DP/ |x_1 - x_2|^2) * (x_1 - x_2)
+                body.vX -= v1 * dx;
+                body.vY -= v1 * dy;
 
-                otherBody.vX += ((2 * body.mass) / combMass) * dp * normalX;
-                otherBody.vY += ((2 * body.mass) / combMass) * dp * normalY;
+                otherBody.vX += v2 * dx;
+                otherBody.vY += v2 * dy;
+
+
+                //now update incase of overlaps
+                const correction = overlap / 2;
+                if (!body.staticBody) {
+                    body.x -= normalX * correction;
+                    body.y -= normalY * correction;
+                }
+                if (!otherBody.staticBody) {
+                    otherBody.x += normalX * correction;
+                    otherBody.y += normalY * correction;
+                }
 
                 
             }
@@ -185,7 +198,7 @@ export default function Simulation(props){
 
         //gett accel vals 
         const { aX, aY } = calculateGravAccelelration(body, bodies);
-        console.log(Math.sqrt(body.vX))
+        //console.log(Math.sqrt(body.vX))
        
             
         //caclulate velocity using leapfrog integration
