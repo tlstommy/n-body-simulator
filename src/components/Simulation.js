@@ -26,17 +26,19 @@ export default function Simulation(props){
         const x1 = { x: body.x, y: body.y };
         const x2 = { x: otherBody.x, y: otherBody.y };
 
-        const v1 = { x: body.vX, y: body.vY };
-        const v2 = { x: otherBody.vX, y: otherBody.vY };
+        const m1v1 = { x: body.vX, y: body.vY };
+        const m2v2 = { x: otherBody.vX, y: otherBody.vY };
 
 
         const dx = otherBody.x - body.x;
         //console.log(dx);
         const dy = otherBody.y - body.y;
         //console.log(dy);
-        const distanceSquare =  dx**2 + dy**2;
-        const distance = (Math.sqrt(dx ** 2 + dy ** 2));
-        //console.log(distance);
+        const distanceSquared =  dx**2 + dy**2;
+        const distance = (Math.sqrt(distanceSquared));
+        console.log(dx**2 + dy**2)
+        console.log(dx*dx + dy*dy);
+        //console.log(Math.abs(body.vX - otherBody.vX));
         const overlap = body.radius + otherBody.radius - distance;
         //console.log(body)
 
@@ -73,11 +75,11 @@ export default function Simulation(props){
                 //https://en.wikipedia.org/wiki/Elastic_collision
                 //dot product of rel velocity and the normal coll vectors
                 const dp = (dvX * normalX + dvY * normalY);    
-                console.log(dp)
-                //if (dp > 0) return;
+                //console.log(dp)
+                if (dp > 0 && overlap <= 0) return;
                 //
-                const v1 = (2 * otherBody.mass / combMass) * dp / distanceSquare;
-                const v2 = (2 * body.mass / combMass) * dp / distanceSquare;
+                const v1 = ((2.0 * otherBody.mass) / combMass) * (dp / distance);
+                const v2 = ((2.0 * body.mass) / combMass) * (dp / distance);
 
                 //from wiki
                 //v`1 = v1 - (2m_2/(m1+m2) * (DP/ |x_1 - x_2|^2) * (x_1 - x_2)
@@ -89,7 +91,8 @@ export default function Simulation(props){
 
 
                 //now update incase of overlaps
-                const correction = overlap / 2;
+                const correction = overlap / 2.0;
+                //console.log(distance)
                 if (!body.staticBody) {
                     body.x -= normalX * correction;
                     body.y -= normalY * correction;
