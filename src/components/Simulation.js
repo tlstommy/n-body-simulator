@@ -145,6 +145,8 @@ export default function Simulation(props){
                 if (Math.ceil(r) < combRadius) {
                     if(enableCollisions){
                         handleCollision(body, otherBody);
+                    }else{
+                        continue;
                     }
                     //console.log("hit")
                     //continue;
