@@ -147,12 +147,10 @@ export default function Simulation(props){
                         handleCollision(body, otherBody);
                     }
                     //console.log("hit")
-                    continue;
-                    //r2 = (r + EPSILON) ** 2
-                    //r2 += EPSILON*EPSILON;
-                    
-                    //r = Math.sqrt(r2);
                     //continue;
+                    
+                    
+                    
                 }
 
 
