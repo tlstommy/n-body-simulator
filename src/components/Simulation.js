@@ -19,6 +19,17 @@ export default function Simulation(props){
     const enableCollisions = true;
     const collisionType = "elastic";
     
+    function calculateTotalEnergy(bodies) {
+        let totalKE = 0;
+        bodies.forEach(body => {
+            let speedSquared = body.vX ** 2 + body.vY ** 2;
+            totalKE += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
+        });
+        console.log("Total Kinetic Energy:", totalKE);
+        return totalKE;
+    }
+    
+    
     
     function handleCollision(body, otherBody) {
         
@@ -36,18 +47,17 @@ export default function Simulation(props){
         //console.log(dy);
         const distanceSquared =  dx**2 + dy**2;
         const distance = (Math.sqrt(distanceSquared));
-        console.log(dx**2 + dy**2)
-        console.log(dx*dx + dy*dy);
+        
         //console.log(Math.abs(body.vX - otherBody.vX));
         const overlap = body.radius + otherBody.radius - distance;
-        //console.log(body)
-
+        
         
         if (overlap > 0) {
             const combMass = body.mass + otherBody.mass;
             
             
             const correction = overlap / 2;
+            
 
 
 
@@ -62,7 +72,7 @@ export default function Simulation(props){
 
             
 
-            //console.log(body);
+            
             
 
             if (collisionType === "bounce") {
@@ -75,23 +85,24 @@ export default function Simulation(props){
                 //https://en.wikipedia.org/wiki/Elastic_collision
                 //dot product of rel velocity and the normal coll vectors
                 const dp = (dvX * normalX + dvY * normalY);    
-                //console.log(dp)
-                if (dp > 0 && overlap <= 0) return;
+                //console.log(overlap)
+                if (dp >= 0 && overlap <= 0) return;
                 //
-                const v1 = ((2.0 * otherBody.mass) / combMass) * (dp / distance);
-                const v2 = ((2.0 * body.mass) / combMass) * (dp / distance);
+                
 
                 //from wiki
                 //v`1 = v1 - (2m_2/(m1+m2) * (DP/ |x_1 - x_2|^2) * (x_1 - x_2)
+                const v1 = ((2.0 * otherBody.mass) / combMass) * (dp / distance);
+                const v2 = ((2.0 * body.mass) / combMass) * (dp / distance);
                 body.vX -= v1 * dx;
                 body.vY -= v1 * dy;
-
                 otherBody.vX += v2 * dx;
                 otherBody.vY += v2 * dy;
 
 
                 //now update incase of overlaps
                 const correction = overlap / 2.0;
+                
                 //console.log(distance)
                 if (!body.staticBody) {
                     body.x -= normalX * correction;
@@ -133,7 +144,7 @@ export default function Simulation(props){
                 let r2 = deltaX ** 2 + deltaY ** 2;
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
-                let r = Math.sqrt(r2 + EPSILON);
+                let r = Math.sqrt(r2) + EPSILON;
                 //console.log(r);
                 //console.log(EPSILON);
                 //console.log("")
@@ -142,7 +153,8 @@ export default function Simulation(props){
 
                 //coll handling here
                 
-                if (Math.ceil(r) < combRadius) {
+                if (r < combRadius) {
+                    
                     if(enableCollisions){
                         handleCollision(body, otherBody);
                     }else{
@@ -167,7 +179,7 @@ export default function Simulation(props){
 
                 const force = G * (body.mass * otherBody.mass) / (denom);
                 //console.log(`${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
-
+                //console.log(force)
                 //console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
                 //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
                 
@@ -275,7 +287,8 @@ export default function Simulation(props){
                 }
             });
             
-            
+
+            calculateTotalEnergy(bodies);
             
             animationRef.current = requestAnimationFrame(animate);
         }

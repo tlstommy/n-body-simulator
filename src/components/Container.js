@@ -10,19 +10,21 @@ export default function Container(){
         
         //2body
         //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: true, trail: [], id:"staticbody"},
+        ///{ x: 950, y: 415, vX: 0, vY: 10e4, radius: 5, color: 'red', mass: 6e1, staticBody: false, trail: [], id:"staticbody"},
+        
         //{ x: 900, y: 215, vX: 1400000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: [], id:"orbitbody"},
         
 
         //{ x: 1000, y: 550, vX: 0, vY: 0, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 1000, y: 550, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 800, y: 550, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 1000, y: 400, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 800, y: 400, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
        
 
 
         //3body
-        { x: 900, y: 750, vX: 0, vY: 100, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 600, y: 250, vX: 0, vY:-100, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 1200, y: 250, vX: 100, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 900, y: 750, vX: 0, vY: 100, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 600, y: 250, vX: 0, vY:-100, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 1200, y: 250, vX: 100, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
         //
         //{ x: 900, y: 415, vX: 0, vY: 0, radius: 1, color: 'white', mass: setMassVal(1,1), staticBody: true, trail: []},
 
