@@ -20,13 +20,26 @@ export default function Simulation(props){
     const collisionType = "elastic";
     
     function calculateTotalEnergy(bodies) {
-        let totalKE = 0;
+        let keBlue = 0;
+        let keGreen = 0;
+
         bodies.forEach(body => {
+            if(body.color == 'green'){
             let speedSquared = body.vX ** 2 + body.vY ** 2;
-            totalKE += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
+            keGreen += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
+            
+        }
+            if(body.color == 'blue'){
+                let speedSquared = body.vX **2 + body.vY**2;
+                keBlue += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
+                
+            }
         });
-        console.log("Total Kinetic Energy:", totalKE);
-        return totalKE;
+        //blue :2.9159466561511297e+34
+        //console.log("\nTotal Kinetic Energy, Green:", keGreen);
+        //console.log("Total Kinetic Energy, Blue :", keBlue);
+
+        return keBlue;
     }
     
     
@@ -141,11 +154,13 @@ export default function Simulation(props){
 
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
-                let r2 = deltaX ** 2 + deltaY ** 2;
+                let r2 = (deltaX ** 2 + deltaY ** 2).toFixed(4);
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
                 let r = Math.sqrt(r2) + EPSILON;
-                //console.log(r);
+                if(body.id=='blue'){
+                console.log(r2);
+                }
                 //console.log(EPSILON);
                 //console.log("")
                 
@@ -174,14 +189,14 @@ export default function Simulation(props){
                 
                 
                 //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
-
+                
                 var denom = r2
 
                 const force = G * (body.mass * otherBody.mass) / (denom);
-                //console.log(`${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
+                //console.log(`\n${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
                 //console.log(force)
                 //console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
-                //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
+                //console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
                 
                 //get the accel from force
                 const acceleration = force / body.mass;
