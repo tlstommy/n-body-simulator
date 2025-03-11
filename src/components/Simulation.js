@@ -72,7 +72,7 @@ export default function Simulation(props){
             const correction = overlap / 2;
             
 
-
+        
 
             const normalX = dx / distance;
             const normalY = dy / distance;
@@ -141,6 +141,7 @@ export default function Simulation(props){
 
     //calculate the Gravitational acceleration for a body based off the other bodies  https://en.wikipedia.org/wiki/Gravitational_acceleration
     function calculateGravAccelelration(body, bodies){
+        
         //x and y accel init
         let aX = 0;
         let aY = 0;
@@ -154,13 +155,12 @@ export default function Simulation(props){
 
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
-                let r2 = (deltaX ** 2 + deltaY ** 2).toFixed(4);
+                let r2 = (deltaX ** 2 + deltaY ** 2);
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
                 let r = Math.sqrt(r2) + EPSILON;
-                if(body.id=='blue'){
-                console.log(r2);
-                }
+                
+                
                 //console.log(EPSILON);
                 //console.log("")
                 
@@ -210,15 +210,96 @@ export default function Simulation(props){
 
             }
         }
-    
+
+        
+        
+        
         return { aX, aY };
 
 
     }
 
     //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
-    //function RK4
+    //integrate with RK4 
+    function rk4(body, bodies, dt){
+        console.log(body)
+        if(isNaN(body.vX)){
+            throw 'nan error'
+        }
+        //get initial vals
+        const {x:x0,y:y0,vX:vx0,vY: vy0 } = body
 
+        
+
+
+        //k1 - estimate accel
+        const {aX:k1_ax, aY: k1_ay} = calculateGravAccelelration(body,bodies)
+        
+       
+        // ✅ Compute k1 safely
+    
+        if (isNaN(k1_ax) || isNaN(k1_ay)) {
+            console.error("NaN detected in k1 calculation!", { k1_ax, k1_ay, body });
+            return;
+        }
+        
+        
+        
+        const k1_vx = k1_ax * dt;
+        const k1_vy = k1_ay * dt;
+        
+        const k1_x = vx0 * dt;
+        const k1_y = vy0 * dt;
+
+        console.log("k1")
+        console.log(body)
+        //k2 - estimate acceleration with k1 (half step)
+        const k1_body = { ...body, x: x0 + 0.5 * k1_x, y: y0 + 0.5 * k1_y, vX: vx0 + 0.5 * k1_vx, vY: vy0 + 0.5 * k1_vy };
+        
+        //get accel now
+        const { aX: k2_ax,aY:k2_ay} = calculateGravAccelelration(k1_body,bodies)
+        const k2_vx = k2_ax * dt;
+        const k2_vy = k2_ay * dt;
+
+        const k2_x = (vx0 + 0.5 * k1_vx) * dt;
+        const k2_y = (vy0 + 0.5 * k1_vy) * dt;
+
+
+        console.log("k2")
+        console.log(body)
+
+        //k3 - estimate acceleration with k2 (half step)
+        const k2_body = { ...body, x: x0 + 0.5 * k2_x, y: y0 + 0.5 * k2_y, vX: vx0 + 0.5 * k2_vx, vY: vy0 + 0.5 * k2_vy };
+        const { aX: k3_ax,aY:k3_ay} = calculateGravAccelelration(k2_body,bodies)
+        const k3_vx = k3_ax * dt;
+        const k3_vy = k3_ay * dt;
+
+        const k3_x = (vx0 + 0.5 * k2_vx) * dt;
+        const k3_y = (vy0 + 0.5 * k2_vy) * dt;
+
+        console.log("k3")
+        console.log(body)
+        //k4 - estimate acceleration with k3 (full)
+        const k3_body = { ...body, x: x0 + 0.5 * k3_x, y: y0 + 0.5 * k3_y, vX: vx0 + 0.5 * k3_vx, vY: vy0 + 0.5 * k3_vy };
+        const { aX: k4_ax,aY:k4_ay} = calculateGravAccelelration(k3_body,bodies)
+        const k4_vx = k4_ax * dt;
+        const k4_vy = k4_ay * dt;
+
+        const k4_x = (vx0 + k3_vx) * dt;
+        const k4_y = (vy0 + k3_vy) * dt;
+
+
+        //rk4 final integration step
+
+        body.x += (k1_x + 2 * k2_x + 2 * k3_x + k4_x) / 6;
+        body.y += (k1_y + 2 * k2_y + 2 * k3_y + k4_y) / 6;
+        body.vX += (k1_vx + 2 * k2_vx + 2 * k3_vx + k4_vx) / 6;
+        body.vY += (k1_vy + 2 * k2_vy + 2 * k3_vy + k4_vy) / 6;
+        
+        console.log("k4")
+        console.log(body)
+        
+    }
 
     //based on newtons grav law
     function updateBody(body, bodies) {
@@ -226,24 +307,9 @@ export default function Simulation(props){
         //no need to check static bodies
         if (body.staticBody) return; 
 
-        //gett accel vals 
-        const { aX, aY } = calculateGravAccelelration(body, bodies);
-        //console.log(Math.sqrt(body.vX))
-       
-            
-        //caclulate velocity using leapfrog integration
-        body.vX += 0.5 * aX * SIM_SPEED;
-        body.vY += 0.5 * aY * SIM_SPEED;
+        //call rk4 method for integration
+        rk4(body, bodies, SIM_SPEED);
 
-        body.x += body.vX * SIM_SPEED;
-        body.y += body.vY * SIM_SPEED;
-        ///second half of lf 
-        const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
-    
-
-        // Final velocity update
-        body.vX += 0.5 * newAX * SIM_SPEED;
-        body.vY += 0.5 * newAY * SIM_SPEED;
 
         if(TRAILS){
             //trail stuff
@@ -261,10 +327,11 @@ export default function Simulation(props){
     }
 
     const animationRef = useRef();
-
+    
     useEffect(() => {
         
         const canvas = canvasRef.current;
+        
         const ctx = canvas.getContext('2d');
 
         //fix anim loop bug with multiple bodies
@@ -272,17 +339,19 @@ export default function Simulation(props){
             cancelAnimationFrame(animationRef.current);
         }
         let frameCount = 0;
+        
         //Anim bodies
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             let bodiesToDelete = [];
-        
+            
             // Now draw the updated bodies
             bodies.forEach(body => {
                 const collsionData = updateBody(body, bodies);
-                const { aX, aY } = calculateGravAccelelration(body, bodies);
-                GravBody({ ...body, ctx, aX, aY, showPhysicsMarkers: PHYSICS_MARKERS  });
+                
+                //const { aX, aY } = calculateGravAccelelration(body, bodies);
+                GravBody({ ...body, ctx, showPhysicsMarkers: PHYSICS_MARKERS  });
                 
                 if(collsionData){
                     if (collsionData.type === "fragment") {
