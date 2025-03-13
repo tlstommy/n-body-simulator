@@ -16,7 +16,7 @@ export default function Simulation(props){
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = true;
+    const enableCollisions = true
     const collisionType = "elastic";
     
     function calculateTotalEnergy(bodies) {
@@ -72,7 +72,7 @@ export default function Simulation(props){
             const correction = overlap / 2;
             
 
-        
+
 
             const normalX = dx / distance;
             const normalY = dy / distance;
@@ -141,7 +141,6 @@ export default function Simulation(props){
 
     //calculate the Gravitational acceleration for a body based off the other bodies  https://en.wikipedia.org/wiki/Gravitational_acceleration
     function calculateGravAccelelration(body, bodies){
-        
         //x and y accel init
         let aX = 0;
         let aY = 0;
@@ -161,26 +160,6 @@ export default function Simulation(props){
                 let r = Math.sqrt(r2) + EPSILON;
                 
                 
-                //console.log(EPSILON);
-                //console.log("")
-                
-                const combRadius = body.radius + otherBody.radius;
-
-                //coll handling here
-                
-                if (r < combRadius) {
-                    
-                    if(enableCollisions){
-                        handleCollision(body, otherBody);
-                    }else{
-                        continue;
-                    }
-                    //console.log("hit")
-                    //continue;
-                    
-                    
-                    
-                }
 
 
                 
@@ -210,95 +189,33 @@ export default function Simulation(props){
 
             }
         }
-
-        
-        
-        
+    
         return { aX, aY };
 
 
     }
 
     //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
-    //integrate with RK4 
-    function rk4(body, bodies, dt){
-        console.log(body)
-        if(isNaN(body.vX)){
-            throw 'nan error'
+    //function RK4
+    function RK4Integrate(body, bodies, dt) {
+        const state = { x: body.x, y: body.y, vX: body.vX, vY: body.vY };
+        
+        function derivatives(state) {
+            const { aX, aY } = calculateGravAccelelration({ ...body, ...state }, bodies);
+            return { dx: state.vX, dy: state.vY, dvX: aX, dvY: aY };
         }
-        //get initial vals
-        const {x:x0,y:y0,vX:vx0,vY: vy0 } = body
 
-        
-
-
-        //k1 - estimate accel
-        const {aX:k1_ax, aY: k1_ay} = calculateGravAccelelration(body,bodies)
-        
-       
-        // ✅ Compute k1 safely
-    
-        if (isNaN(k1_ax) || isNaN(k1_ay)) {
-            console.error("NaN detected in k1 calculation!", { k1_ax, k1_ay, body });
-            return;
-        }
+        const k1 = derivatives(state);
+        const k2 = derivatives({ x: state.x + k1.dx * dt / 2, y: state.y + k1.dy * dt / 2, vX: state.vX + k1.dvX * dt / 2, vY: state.vY + k1.dvY * dt / 2 });
+        const k3 = derivatives({ x: state.x + k2.dx * dt / 2, y: state.y + k2.dy * dt / 2, vX: state.vX + k2.dvX * dt / 2, vY: state.vY + k2.dvY * dt / 2 });
+        const k4 = derivatives({ x: state.x + k3.dx * dt, y: state.y + k3.dy * dt, vX: state.vX + k3.dvX * dt, vY: state.vY + k3.dvY * dt });
         
         
         
-        const k1_vx = k1_ax * dt;
-        const k1_vy = k1_ay * dt;
-        
-        const k1_x = vx0 * dt;
-        const k1_y = vy0 * dt;
-
-        console.log("k1")
-        console.log(body)
-        //k2 - estimate acceleration with k1 (half step)
-        const k1_body = { ...body, x: x0 + 0.5 * k1_x, y: y0 + 0.5 * k1_y, vX: vx0 + 0.5 * k1_vx, vY: vy0 + 0.5 * k1_vy };
-        
-        //get accel now
-        const { aX: k2_ax,aY:k2_ay} = calculateGravAccelelration(k1_body,bodies)
-        const k2_vx = k2_ax * dt;
-        const k2_vy = k2_ay * dt;
-
-        const k2_x = (vx0 + 0.5 * k1_vx) * dt;
-        const k2_y = (vy0 + 0.5 * k1_vy) * dt;
-
-
-        console.log("k2")
-        console.log(body)
-
-        //k3 - estimate acceleration with k2 (half step)
-        const k2_body = { ...body, x: x0 + 0.5 * k2_x, y: y0 + 0.5 * k2_y, vX: vx0 + 0.5 * k2_vx, vY: vy0 + 0.5 * k2_vy };
-        const { aX: k3_ax,aY:k3_ay} = calculateGravAccelelration(k2_body,bodies)
-        const k3_vx = k3_ax * dt;
-        const k3_vy = k3_ay * dt;
-
-        const k3_x = (vx0 + 0.5 * k2_vx) * dt;
-        const k3_y = (vy0 + 0.5 * k2_vy) * dt;
-
-        console.log("k3")
-        console.log(body)
-        //k4 - estimate acceleration with k3 (full)
-        const k3_body = { ...body, x: x0 + 0.5 * k3_x, y: y0 + 0.5 * k3_y, vX: vx0 + 0.5 * k3_vx, vY: vy0 + 0.5 * k3_vy };
-        const { aX: k4_ax,aY:k4_ay} = calculateGravAccelelration(k3_body,bodies)
-        const k4_vx = k4_ax * dt;
-        const k4_vy = k4_ay * dt;
-
-        const k4_x = (vx0 + k3_vx) * dt;
-        const k4_y = (vy0 + k3_vy) * dt;
-
-
-        //rk4 final integration step
-
-        body.x += (k1_x + 2 * k2_x + 2 * k3_x + k4_x) / 6;
-        body.y += (k1_y + 2 * k2_y + 2 * k3_y + k4_y) / 6;
-        body.vX += (k1_vx + 2 * k2_vx + 2 * k3_vx + k4_vx) / 6;
-        body.vY += (k1_vy + 2 * k2_vy + 2 * k3_vy + k4_vy) / 6;
-        
-        console.log("k4")
-        console.log(body)
-        
+        body.x += (k1.dx + 2 * k2.dx + 2 * k3.dx + k4.dx) * dt / 6;
+        body.y += (k1.dy + 2 * k2.dy + 2 * k3.dy + k4.dy) * dt / 6;
+        body.vX += (k1.dvX + 2 * k2.dvX + 2 * k3.dvX + k4.dvX) * dt / 6;
+        body.vY += (k1.dvY + 2 * k2.dvY + 2 * k3.dvY + k4.dvY) * dt / 6;
     }
 
     //based on newtons grav law
@@ -307,10 +224,14 @@ export default function Simulation(props){
         //no need to check static bodies
         if (body.staticBody) return; 
 
-        //call rk4 method for integration
-        rk4(body, bodies, SIM_SPEED);
-
-
+        
+        //integrate witk rk4
+        RK4Integrate(body,bodies,SIM_SPEED);
+        if (enableCollisions) {
+            bodies.forEach(otherBody => {
+                if (body !== otherBody) handleCollision(body, otherBody);
+            });
+        }
         if(TRAILS){
             //trail stuff
             //add cur pos to trail list
@@ -327,11 +248,10 @@ export default function Simulation(props){
     }
 
     const animationRef = useRef();
-    
+
     useEffect(() => {
         
         const canvas = canvasRef.current;
-        
         const ctx = canvas.getContext('2d');
 
         //fix anim loop bug with multiple bodies
@@ -339,19 +259,17 @@ export default function Simulation(props){
             cancelAnimationFrame(animationRef.current);
         }
         let frameCount = 0;
-        
         //Anim bodies
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             let bodiesToDelete = [];
-            
+        
             // Now draw the updated bodies
             bodies.forEach(body => {
                 const collsionData = updateBody(body, bodies);
-                
-                //const { aX, aY } = calculateGravAccelelration(body, bodies);
-                GravBody({ ...body, ctx, showPhysicsMarkers: PHYSICS_MARKERS  });
+                const { aX, aY } = calculateGravAccelelration(body, bodies);
+                GravBody({ ...body, ctx, aX, aY, showPhysicsMarkers: PHYSICS_MARKERS  });
                 
                 if(collsionData){
                     if (collsionData.type === "fragment") {
