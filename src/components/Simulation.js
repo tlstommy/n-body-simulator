@@ -16,7 +16,7 @@ export default function Simulation(props){
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = true
+    const enableCollisions = true;
     const collisionType = "elastic";
     
     function calculateTotalEnergy(bodies) {
@@ -198,20 +198,43 @@ export default function Simulation(props){
     //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
     //function RK4
     function RK4Integrate(body, bodies, dt) {
-        const state = { x: body.x, y: body.y, vX: body.vX, vY: body.vY };
+        if (!body || body.x == null || body.y == null || body.vX == null || body.vY == null) {
+            console.warn('Skipping RK4 integration for invalid body:', body);
+            return;
+        }
         
+    
+        const state = { x: body.x, y: body.y, vX: body.vX, vY: body.vY };
+    
+        
+
+
+
         function derivatives(state) {
             const { aX, aY } = calculateGravAccelelration({ ...body, ...state }, bodies);
             return { dx: state.vX, dy: state.vY, dvX: aX, dvY: aY };
         }
-
+    
         const k1 = derivatives(state);
-        const k2 = derivatives({ x: state.x + k1.dx * dt / 2, y: state.y + k1.dy * dt / 2, vX: state.vX + k1.dvX * dt / 2, vY: state.vY + k1.dvY * dt / 2 });
-        const k3 = derivatives({ x: state.x + k2.dx * dt / 2, y: state.y + k2.dy * dt / 2, vX: state.vX + k2.dvX * dt / 2, vY: state.vY + k2.dvY * dt / 2 });
-        const k4 = derivatives({ x: state.x + k3.dx * dt, y: state.y + k3.dy * dt, vX: state.vX + k3.dvX * dt, vY: state.vY + k3.dvY * dt });
-        
-        
-        
+        const k2 = derivatives({
+            x: state.x + k1.dx * dt / 2,
+            y: state.y + k1.dy * dt / 2,
+            vX: state.vX + k1.dvX * dt / 2,
+            vY: state.vY + k1.dvY * dt / 2,
+        });
+        const k3 = derivatives({
+            x: state.x + k2.dx * dt / 2,
+            y: state.y + k2.dy * dt / 2,
+            vX: state.vX + k2.dvX * dt / 2,
+            vY: state.vY + k2.dvY * dt / 2,
+        });
+        const k4 = derivatives({
+            x: state.x + k3.dx * dt,
+            y: state.y + k3.dy * dt,
+            vX: state.vX + k3.dvX * dt,
+            vY: state.vY + k3.dvY * dt,
+        });
+    
         body.x += (k1.dx + 2 * k2.dx + 2 * k3.dx + k4.dx) * dt / 6;
         body.y += (k1.dy + 2 * k2.dy + 2 * k3.dy + k4.dy) * dt / 6;
         body.vX += (k1.dvX + 2 * k2.dvX + 2 * k3.dvX + k4.dvX) * dt / 6;
@@ -250,7 +273,7 @@ export default function Simulation(props){
     const animationRef = useRef();
 
     useEffect(() => {
-        
+        console.log('bodies', bodies);
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
@@ -263,6 +286,8 @@ export default function Simulation(props){
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            
+
             let bodiesToDelete = [];
         
             // Now draw the updated bodies
