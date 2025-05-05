@@ -20,26 +20,13 @@ export default function Simulation(props){
     const collisionType = "elastic";
     
     function calculateTotalEnergy(bodies) {
-        let keBlue = 0;
-        let keGreen = 0;
-
+        let totalKE = 0;
         bodies.forEach(body => {
-            if(body.color == 'green'){
             let speedSquared = body.vX ** 2 + body.vY ** 2;
-            keGreen += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
-            
-        }
-            if(body.color == 'blue'){
-                let speedSquared = body.vX **2 + body.vY**2;
-                keBlue += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
-                
-            }
+            totalKE += 0.5 * body.mass * speedSquared; //KE = 0.5 * m * v^2
         });
-        //blue :2.9159466561511297e+34
-        //console.log("\nTotal Kinetic Energy, Green:", keGreen);
-        //console.log("Total Kinetic Energy, Blue :", keBlue);
-
-        return keBlue;
+        console.log("Total Kinetic Energy:", totalKE);
+        return totalKE;
     }
     
     
@@ -154,12 +141,31 @@ export default function Simulation(props){
 
                 //r = distance between the two bodies
                 //const r = Math.sqrt(deltaX**2 + deltaY**2);
-                let r2 = (deltaX ** 2 + deltaY ** 2);
+                let r2 = deltaX ** 2 + deltaY ** 2;
                 //r2 = Math.max(r2, EPSILON ** 2); // Prevents explosion in force at small r
 
                 let r = Math.sqrt(r2) + EPSILON;
+                //console.log(r);
+                //console.log(EPSILON);
+                //console.log("")
                 
+                const combRadius = body.radius + otherBody.radius;
+
+                //coll handling here
                 
+                if (r < combRadius) {
+                    
+                    if(enableCollisions){
+                        handleCollision(body, otherBody);
+                    }else{
+                        continue;
+                    }
+                    //console.log("hit")
+                    //continue;
+                    
+                    
+                    
+                }
 
 
                 
@@ -168,14 +174,14 @@ export default function Simulation(props){
                 
                 
                 //const force = G * ((body.mass * otherBody.mass) / (r**2  + EPSILON**2));
-                
+
                 var denom = r2
 
                 const force = G * (body.mass * otherBody.mass) / (denom);
-                //console.log(`\n${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
+                //console.log(`${force.toFixed(4).padEnd(10)} = ${G} * (${(body.mass * otherBody.mass).toExponential(4).padEnd(10)}) / (${denom.toExponential(4).padEnd(10)})`);
                 //console.log(force)
                 //console.log(`Force between ${body.id} and ${otherBody.id}:, ${force}`);
-                //console.log(`Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass}`);
+                //console.log(Mass of ${body.id}: ${body.mass}, Mass of ${otherBody.id}: ${otherBody.mass});
                 
                 //get the accel from force
                 const acceleration = force / body.mass;
@@ -197,49 +203,7 @@ export default function Simulation(props){
 
     //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
     //function RK4
-    function RK4Integrate(body, bodies, dt) {
-        if (!body || body.x == null || body.y == null || body.vX == null || body.vY == null) {
-            console.warn('Skipping RK4 integration for invalid body:', body);
-            return;
-        }
-        
-    
-        const state = { x: body.x, y: body.y, vX: body.vX, vY: body.vY };
-    
-        
 
-
-
-        function derivatives(state) {
-            const { aX, aY } = calculateGravAccelelration({ ...body, ...state }, bodies);
-            return { dx: state.vX, dy: state.vY, dvX: aX, dvY: aY };
-        }
-    
-        const k1 = derivatives(state);
-        const k2 = derivatives({
-            x: state.x + k1.dx * dt / 2,
-            y: state.y + k1.dy * dt / 2,
-            vX: state.vX + k1.dvX * dt / 2,
-            vY: state.vY + k1.dvY * dt / 2,
-        });
-        const k3 = derivatives({
-            x: state.x + k2.dx * dt / 2,
-            y: state.y + k2.dy * dt / 2,
-            vX: state.vX + k2.dvX * dt / 2,
-            vY: state.vY + k2.dvY * dt / 2,
-        });
-        const k4 = derivatives({
-            x: state.x + k3.dx * dt,
-            y: state.y + k3.dy * dt,
-            vX: state.vX + k3.dvX * dt,
-            vY: state.vY + k3.dvY * dt,
-        });
-    
-        body.x += (k1.dx + 2 * k2.dx + 2 * k3.dx + k4.dx) * dt / 6;
-        body.y += (k1.dy + 2 * k2.dy + 2 * k3.dy + k4.dy) * dt / 6;
-        body.vX += (k1.dvX + 2 * k2.dvX + 2 * k3.dvX + k4.dvX) * dt / 6;
-        body.vY += (k1.dvY + 2 * k2.dvY + 2 * k3.dvY + k4.dvY) * dt / 6;
-    }
 
     //based on newtons grav law
     function updateBody(body, bodies) {
@@ -247,14 +211,25 @@ export default function Simulation(props){
         //no need to check static bodies
         if (body.staticBody) return; 
 
-        
-        //integrate witk rk4
-        RK4Integrate(body,bodies,SIM_SPEED);
-        if (enableCollisions) {
-            bodies.forEach(otherBody => {
-                if (body !== otherBody) handleCollision(body, otherBody);
-            });
-        }
+        //gett accel vals 
+        const { aX, aY } = calculateGravAccelelration(body, bodies);
+        //console.log(Math.sqrt(body.vX))
+       
+            
+        //caclulate velocity using leapfrog integration
+        body.vX += 0.5 * aX * SIM_SPEED;
+        body.vY += 0.5 * aY * SIM_SPEED;
+
+        body.x += body.vX * SIM_SPEED;
+        body.y += body.vY * SIM_SPEED;
+        ///second half of lf 
+        const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
+    
+
+        // Final velocity update
+        body.vX += 0.5 * newAX * SIM_SPEED;
+        body.vY += 0.5 * newAY * SIM_SPEED;
+
         if(TRAILS){
             //trail stuff
             //add cur pos to trail list
@@ -273,7 +248,7 @@ export default function Simulation(props){
     const animationRef = useRef();
 
     useEffect(() => {
-        console.log('bodies', bodies);
+        
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
@@ -286,8 +261,6 @@ export default function Simulation(props){
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            
-
             let bodiesToDelete = [];
         
             // Now draw the updated bodies
