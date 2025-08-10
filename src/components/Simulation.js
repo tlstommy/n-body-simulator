@@ -16,7 +16,7 @@ export default function Simulation(props){
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
     const G = 6.6743e-11; //newtons universal Grav constant
 
-    const enableCollisions = true;
+    const enableCollisions = false;
     const collisionType = "elastic";
     
     function calculateTotalEnergy(bodies) {

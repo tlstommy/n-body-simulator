@@ -23,10 +23,17 @@ export default function Container(){
 
 
         //3body
-        //{ x: 900, y: 750, vX: 0, vY: 100, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 600, y: 250, vX: 0, vY:-100, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 1200, y: 250, vX: 100, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //
+        //{ x: 900, y: 650, vX: -2.6e5, vY: -2.6e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 600, y: 250, vX: 2.6e5, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        //{ x: 1200, y: 250, vX: 0, vY: 2.6e5, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        
+
+        //3body - Stableish triangular configuration (Lagrange L4/L5 type)
+        { x: 900, y: 550, vX: 0, vY: -3e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 750, y: 433, vX: 2.6e5, vY: 1.5e5, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 1050, y: 433, vX: -2.6e5, vY: 1.5e5, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        
+        
         //{ x: 900, y: 415, vX: 0, vY: 0, radius: 1, color: 'white', mass: setMassVal(1,1), staticBody: true, trail: []},
 
         //four body 
