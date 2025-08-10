@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import GravBody from "./GravBody";
 import LaunchLine from './LaunchLine';
+import TrajectoryLine from './TrajectoryLine';
 import Simulation from './Simulation';
 
 
@@ -10,14 +11,14 @@ export default function Container(){
         
         //2body
         //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: true, trail: [], id:"staticbody"},
-        ///{ x: 950, y: 415, vX: 0, vY: 10e4, radius: 5, color: 'red', mass: 6e1, staticBody: false, trail: [], id:"staticbody"},
+        //{ x: 950, y: 415, vX: 0, vY: 10e4, radius: 5, color: 'red', mass: 6e1, staticBody: false, trail: [], id:"staticbody"},
         
         //{ x: 900, y: 215, vX: 1400000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: [], id:"orbitbody"},
         
 
         //{ x: 1000, y: 550, vX: 0, vY: 0, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 1000, y: 400, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: [], id: "blue"},
-        { x: 800, y: 400, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: [], id: "green"},
+        //{ x: 1000, y: 400, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: [], id: "blue"},
+        //{ x: 800, y: 400, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: [], id: "green"},
        
 
 
@@ -105,9 +106,9 @@ export default function Container(){
             y: startClickPos.y - rect.top,  //offset to match launch line       
             vX: deltaX * velocityFactor, 
             vY: deltaY * velocityFactor, 
-            radius: 5, 
+            radius: 15, 
             color: colors[randomIndex],
-            mass: 6e1,
+            mass: 6e24,
             staticBody: false,
             trail: [],
             id: "launchbody"
@@ -122,11 +123,40 @@ export default function Container(){
         setStartClickPos(null);
         setEndClickPos(null);
     }
+
+    // Create predicted body data for trajectory calculation
+    const getPredictedBody = () => {
+        if (!startClickPos || !endClickPos) return null;
+
+        var canvas = document.getElementById("canvas");
+        if (!canvas) return null;
+        var rect = canvas.getBoundingClientRect();
+
+        // Convert screen coordinates to canvas coordinates
+        const startCanvasX = startClickPos.x - rect.left;
+        const startCanvasY = startClickPos.y - rect.top;
+        const endCanvasX = endClickPos.x - rect.left;
+        const endCanvasY = endClickPos.y - rect.top;
+
+        const deltaX = startCanvasX - endCanvasX;
+        const deltaY = startCanvasY - endCanvasY;
+        const velocityFactor = 1e4;
+
+        return {
+            x: startCanvasX,
+            y: startCanvasY,
+            vX: deltaX * velocityFactor,
+            vY: deltaY * velocityFactor,
+            mass: 6e1,
+            radius: 10
+        };
+    };
     
 
     return(
         <div onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
             <LaunchLine start={startClickPos} end={endClickPos} />
+            <TrajectoryLine body={getPredictedBody()} existingBodies={bodiesData} />
             <Simulation bodies={bodiesData} setBodiesData={setBodiesData} />
         </div>
     );

@@ -10,7 +10,7 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = false;
+    const TRAILS = true;
     const PHYSICS_MARKERS = false;
     const SIM_SPEED = 1e-6;
     const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
@@ -236,7 +236,7 @@ export default function Simulation(props){
             body.trail.push({ x: body.x, y: body.y });
 
             //trail lims
-            if (body.trail.length > 5000) {
+            if (body.trail.length > 1000) {
                 body.trail.shift();
             }
         }
