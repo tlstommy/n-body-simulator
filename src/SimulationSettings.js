@@ -10,7 +10,7 @@ export const SimulationSettings = {
   collisionType: 'elastic', // type of collision ('elastic' or 'inelastic')
   enablePhysicsMarkers: false,
   enableTrails: true,
-  trailLength: 300, // shorter trails for cleaner view at high speeds
+  trailLength: 500, // shorter trails for cleaner view at high speeds
   launchVelocityFactor: 1e-2,
 };
 

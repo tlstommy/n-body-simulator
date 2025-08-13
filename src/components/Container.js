@@ -81,7 +81,16 @@ export default function Container(){
                 console.log('Space key pressed - Toggling pause from:', isPaused);
                 setIsPaused(prev => !prev);
                 break;
-                
+            case 'h':
+                event.preventDefault();
+                console.log('H key pressed - Displaying help');
+                alert(`Keyboard Controls:
+                R - Reset Simulation
+                T - Toggle Trails
+                M - Toggle Physics Markers
+                Space/P - Pause/Resume
+                H - Display Help
+                `);
             default:
                 // Do nothing for other keys
                 break;
@@ -159,7 +168,7 @@ export default function Container(){
             y: startClickPos.y - rect.top,  //offset to match launch line       
             vX: deltaX * velocityFactor, 
             vY: deltaY * velocityFactor, 
-            radius: 5, 
+            radius: 8, 
             color: colors[randomIndex],
             mass: 1,
             staticBody: false,
@@ -201,7 +210,7 @@ export default function Container(){
             vX: deltaX * velocityFactor,
             vY: deltaY * velocityFactor,
             mass: 1,
-            radius: 10
+            radius: 8
         };
     };
     
@@ -211,6 +220,18 @@ export default function Container(){
             <LaunchLine start={startClickPos} end={endClickPos} />
             <TrajectoryLine body={getPredictedBody()} existingBodies={bodiesData} />
             <Simulation bodies={bodiesData} setBodiesData={setBodiesData} isPaused={isPaused} />
+            <div style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                color: 'rgba(255, 255, 255, 0.69)',
+                fontSize: '14px',
+                fontFamily: 'Arial, sans-serif',
+                userSelect: 'none',
+                pointerEvents: 'none'
+            }}>
+                press 'h' for controls
+            </div>
         </div>
     );
 }
