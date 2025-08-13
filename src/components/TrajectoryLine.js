@@ -1,11 +1,14 @@
+import { SimulationSettings } from '../SimulationSettings';
+
 export default function TrajectoryLine(props) {
-    const { body, existingBodies, steps = 100, stepSize = 1e-6 } = props;
+    const { body, existingBodies, steps = 100 } = props;
 
     if (!body || !existingBodies) return null;
 
-    //Physics constants
-    const G = 6.6743e-11;
-    const EPSILON = 1e-2;
+    //Physics constants from settings
+    const G = SimulationSettings.G;
+    const EPSILON = SimulationSettings.epsilon;
+    const stepSize = SimulationSettings.physicsTimeStep;
 
     //function to calculate gravitational acceleration for trajectory prediction
     function calculateTrajectoryAcceleration(testBody, bodies) {
@@ -16,11 +19,10 @@ export default function TrajectoryLine(props) {
             const deltaX = otherBody.x - testBody.x;
             const deltaY = otherBody.y - testBody.y;
             
-            let r2 = deltaX ** 2 + deltaY ** 2;
-            let r = Math.sqrt(r2) + EPSILON;
+            let r2 = deltaX ** 2 + deltaY ** 2 + EPSILON ** 2;
+            let r = Math.sqrt(r2);
             
-            const force = G * (testBody.mass * otherBody.mass) / r2;
-            const acceleration = force / testBody.mass;
+            const acceleration = G * otherBody.mass / r2;
             
             aX += acceleration * (deltaX / r);
             aY += acceleration * (deltaY / r);

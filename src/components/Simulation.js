@@ -10,7 +10,6 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const SIM_SPEED = SimulationSettings.simSpeed
     const EPSILON = SimulationSettings.epsilon; //softening param to prevent singularities or physics errors on collisions
     const G = SimulationSettings.G; //newtons universal Grav constant
     const enableCollisions = SimulationSettings.enableCollision;
@@ -200,21 +199,24 @@ export default function Simulation(props){
             body.aY = aY;
         }
 
+        // Use fixed physics timestep for accuracy, scaled by speed setting
+        const dt = SimulationSettings.physicsTimeStep * SimulationSettings.simSpeed;
+
         // Leapfrog integration - kick-drift-kick method
         // First half-step velocity update (kick)
-        body.vX += 0.5 * body.aX * SIM_SPEED;
-        body.vY += 0.5 * body.aY * SIM_SPEED;
+        body.vX += 0.5 * body.aX * dt;
+        body.vY += 0.5 * body.aY * dt;
 
         // Full position update (drift)
-        body.x += body.vX * SIM_SPEED;
-        body.y += body.vY * SIM_SPEED;
+        body.x += body.vX * dt;
+        body.y += body.vY * dt;
         
         // Calculate new acceleration at the new position
         const { aX: newAX, aY: newAY } = calculateGravAccelelration(body, bodies);
         
         // Second half-step velocity update (kick)
-        body.vX += 0.5 * newAX * SIM_SPEED;
-        body.vY += 0.5 * newAY * SIM_SPEED;
+        body.vX += 0.5 * newAX * dt;
+        body.vY += 0.5 * newAY * dt;
         
         // Store acceleration for next timestep
         body.aX = newAX;
@@ -253,10 +255,28 @@ export default function Simulation(props){
             
             let bodiesToDelete = [];
         
-            //run through each body and update its position and velocity
+            // Run multiple physics steps per frame for speed and smoothness
+            if (!isPaused) {
+                const stepsPerFrame = Math.round(SimulationSettings.physicsStepsPerFrame * SimulationSettings.simSpeed);
+                for (let step = 0; step < stepsPerFrame; step++) {
+                    bodies.forEach(body => {
+                        const collsionData = updateBody(body, bodies);
+                        
+                        if(collsionData){
+                            if (collsionData.type === "fragment") {
+                                bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
+                            
+                            //normal removal
+                            }else if(collsionData.type === ""){
+                                bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Render all bodies
             bodies.forEach(body => {
-                // Only update physics if not paused
-                const collsionData = isPaused ? null : updateBody(body, bodies);
                 const { aX, aY } = calculateGravAccelelration(body, bodies);
                 GravBody({ 
                     ...body, 
@@ -266,16 +286,6 @@ export default function Simulation(props){
                     showPhysicsMarkers: SimulationSettings.enablePhysicsMarkers,
                     trail: SimulationSettings.enableTrails ? body.trail : []
                 });
-                
-                if(collsionData){
-                    if (collsionData.type === "fragment") {
-                        bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
-                    
-                    //normal removal
-                    }else if(collsionData.type === ""){
-                        bodiesToDelete = bodiesToDelete.concat(collsionData.collidors);
-                    }
-                }
             });
 
             bodiesToDelete.forEach(bodyToDelete => {

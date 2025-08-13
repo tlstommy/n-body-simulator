@@ -10,45 +10,29 @@ export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
         
-        //anchor body
-        //{ x: 900, y: 500, vX: 0, vY: 0, radius: 1, color: 'white', mass: 1e3, staticBody: true, trail: [], id:"staticbody"},
-
-
-
-        //2body
-        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: false, trail: [], id:"staticbody"},
-        //{ x: 950, y: 415, vX: 0, vY: 10e4, radius: 5, color: 'red', mass: 6e1, staticBody: false, trail: [], id:"staticbody"},
+        // === STABLE THREE-BODY SYSTEMS ===
         
-        //{ x: 900, y: 215, vX: 1400000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: [], id:"orbitbody"},
+        // Figure-8 orbit (stable chaotic system)
+        { x: 900, y: 400, vX: 0.347, vY: 0.533, radius: 8, color: 'red', mass: 1, staticBody: false, trail: [], id: "body1"},
+        { x: 900, y: 600, vX: 0.347, vY: 0.533, radius: 8, color: 'green', mass: 1, staticBody: false, trail: [], id: "body2"},
+        { x: 900, y: 500, vX: -0.694, vY: -1.066, radius: 8, color: 'blue', mass: 1, staticBody: false, trail: [], id: "body3"},
         
-
-        //{ x: 1000, y: 550, vX: 0, vY: 0, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 1000, y: 400, vX: 0, vY: 0, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: [], id: "blue"},
-        //{ x: 800, y: 400, vX: 0, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: [], id: "green"},
-       
-
-
-        //3body
-        //{ x: 900, y: 650, vX: -2.6e5, vY: -2.6e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 600, y: 250, vX: 2.6e5, vY: 0, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
-        //{ x: 1200, y: 250, vX: 0, vY: 2.6e5, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        // === ALTERNATIVE CONFIGURATIONS (comment/uncomment to try) ===
         
-
-        //3body - Stableish triangular configuration (Lagrange L4/L5 type)
-        { x: 900, y: 650, vX: 0, vY: -3e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 750, y: 433, vX: 2.6e5, vY: 1.5e5, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
-        { x: 1050, y: 433, vX: -2.6e5, vY: 1.5e5, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
+        // Stable triangular orbit (Lagrange points style)
+        // { x: 900, y: 400, vX: -0.5, vY: 0.866, radius: 10, color: 'red', mass: 1, staticBody: false, trail: [], id: "body1"},
+        // { x: 800, y: 573, vX: 1.0, vY: 0, radius: 10, color: 'green', mass: 1, staticBody: false, trail: [], id: "body2"},
+        // { x: 1000, y: 573, vX: -0.5, vY: -0.866, radius: 10, color: 'blue', mass: 1, staticBody: false, trail: [], id: "body3"},
         
+        // Hierarchical system (binary + third body)
+        // { x: 850, y: 500, vX: 0, vY: 1.5, radius: 12, color: 'red', mass: 2, staticBody: false, trail: [], id: "body1"},
+        // { x: 950, y: 500, vX: 0, vY: -1.5, radius: 12, color: 'green', mass: 2, staticBody: false, trail: [], id: "body2"},
+        // { x: 900, y: 350, vX: 2.0, vY: 0, radius: 8, color: 'blue', mass: 0.5, staticBody: false, trail: [], id: "body3"},
         
-        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 1, color: 'white', mass: setMassVal(1,1), staticBody: true, trail: []},
-
-        //four body 
-        //{ x: 900, y: 215, vX: 100000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: []},
-        //{ x: 900, y: 615, vX: -100000, vY: 0, radius: 5, color: 'red', mass: 7.34767309e22, staticBody: false, trail: []},
-        //{ x: 700, y: 415, vX: 0, vY: -100000, radius: 5, color: 'green', mass: 7.34767309e22, staticBody: false, trail: []},
-        //{ x: 1100, y: 415, vX: 0, vY: 100000, radius: 5, color: 'purple', mass: 7.34767309e22, staticBody: false, trail: []},
-        
-        
+        // Pythagorean three-body problem (chaotic)
+        // { x: 900, y: 500, vX: 0, vY: 0, radius: 15, color: 'red', mass: 3, staticBody: false, trail: [], id: "body1"},
+        // { x: 800, y: 500, vX: 0, vY: 0, radius: 12, color: 'green', mass: 4, staticBody: false, trail: [], id: "body2"},
+        // { x: 1000, y: 400, vX: 0, vY: 0, radius: 10, color: 'blue', mass: 5, staticBody: false, trail: [], id: "body3"},
     ]);
 
     const colors = ['red','green','blue','yellow','purple','orange','pink','light-blue']
@@ -166,7 +150,7 @@ export default function Container(){
         
         let i = Math.floor(Math.random() * colors.length);
         
-        const velocityFactor = 1e4;
+        const velocityFactor = SimulationSettings.launchVelocityFactor;
         const randomIndex = Math.floor(Math.random() * colors.length);
         
         //make it 
@@ -175,9 +159,9 @@ export default function Container(){
             y: startClickPos.y - rect.top,  //offset to match launch line       
             vX: deltaX * velocityFactor, 
             vY: deltaY * velocityFactor, 
-            radius: 15, 
+            radius: 5, 
             color: colors[randomIndex],
-            mass: 6e24,
+            mass: 1,
             staticBody: false,
             trail: [],
             id: "launchbody"
@@ -209,14 +193,14 @@ export default function Container(){
 
         const deltaX = startCanvasX - endCanvasX;
         const deltaY = startCanvasY - endCanvasY;
-        const velocityFactor = 1e4;
+        const velocityFactor = SimulationSettings.launchVelocityFactor;
 
         return {
             x: startCanvasX,
             y: startCanvasY,
             vX: deltaX * velocityFactor,
             vY: deltaY * velocityFactor,
-            mass: 6e1,
+            mass: 1,
             radius: 10
         };
     };
