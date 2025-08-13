@@ -51,6 +51,22 @@ export default function Container(){
     const [endClickPos,setEndClickPos] = useState(null);
     const [mouseHeldDown,setMouseHeldDown] = useState(null);
     
+    //Add keyboard event listener for reset and stuff
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === 'r' || event.key === 'R') {
+                window.location.reload();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []);
+    
 
     //sets the mass by raising mass val to massmult pow may be easier to use with future stuff??
     function setMassVal(massVal,massPow){

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState} from 'react';
 import GravBody from './GravBody';
-
+import { SimulationSettings } from '../SimulationSettings';
 
 export default function Simulation(props){
     const { bodies  } = props;
@@ -10,15 +10,14 @@ export default function Simulation(props){
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = true;
-    const PHYSICS_MARKERS = false;
-    const SIM_SPEED = 1e-6;
-    const EPSILON = 1e-2; //softening param to prevent singularities or physics errors on collisions
-    const G = 6.6743e-11; //newtons universal Grav constant
+    const TRAILS = SimulationSettings.enableTrails;
+    const PHYSICS_MARKERS = SimulationSettings.enablePhysicsMarkers;
+    const SIM_SPEED = SimulationSettings.simSpeed
+    const EPSILON = SimulationSettings.epsilon; //softening param to prevent singularities or physics errors on collisions
+    const G = SimulationSettings.G; //newtons universal Grav constant
+    const enableCollisions = SimulationSettings.enableCollision;
+    const collisionType = SimulationSettings.collisionType;
 
-    const enableCollisions = false;
-    const collisionType = "elastic";
-    
     function calculateTotalEnergy(bodies) {
         let totalKE = 0;
         bodies.forEach(body => {
@@ -236,7 +235,7 @@ export default function Simulation(props){
             body.trail.push({ x: body.x, y: body.y });
 
             //trail lims
-            if (body.trail.length > 1000) {
+            if (body.trail.length > SimulationSettings.trailLength) {
                 body.trail.shift();
             }
         }
