@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import GravBody from "./GravBody";
+import { SimulationSettings } from '../SimulationSettings';
 import LaunchLine from './LaunchLine';
 import TrajectoryLine from './TrajectoryLine';
 import Simulation from './Simulation';
@@ -9,8 +10,13 @@ export default function Container(){
 
     const [bodiesData, setBodiesData] = useState([
         
+        //anchor body
+        //{ x: 900, y: 500, vX: 0, vY: 0, radius: 1, color: 'white', mass: 1e3, staticBody: true, trail: [], id:"staticbody"},
+
+
+
         //2body
-        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: true, trail: [], id:"staticbody"},
+        //{ x: 900, y: 415, vX: 0, vY: 0, radius: 15, color: 'white', mass: 5.972e24, staticBody: false, trail: [], id:"staticbody"},
         //{ x: 950, y: 415, vX: 0, vY: 10e4, radius: 5, color: 'red', mass: 6e1, staticBody: false, trail: [], id:"staticbody"},
         
         //{ x: 900, y: 215, vX: 1400000, vY: 0, radius: 5, color: 'blue', mass: 7.34767309e22, staticBody: false, trail: [], id:"orbitbody"},
@@ -29,7 +35,7 @@ export default function Container(){
         
 
         //3body - Stableish triangular configuration (Lagrange L4/L5 type)
-        { x: 900, y: 550, vX: 0, vY: -3e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
+        { x: 900, y: 650, vX: 0, vY: -3e5, radius: 15, color: 'red', mass: setMassVal(6,24), staticBody: false, trail: []},
         { x: 750, y: 433, vX: 2.6e5, vY: 1.5e5, radius: 15, color: 'green', mass: setMassVal(6,24), staticBody: false, trail: []},
         { x: 1050, y: 433, vX: -2.6e5, vY: 1.5e5, radius: 15, color: 'blue', mass: setMassVal(6,24), staticBody: false, trail: []},
         
@@ -52,13 +58,53 @@ export default function Container(){
     const [mouseHeldDown,setMouseHeldDown] = useState(null);
     
     //Add keyboard event listener for reset and stuff
-    useEffect(() => {
-        const handleKeyPress = (event) => {
-            if (event.key === 'r' || event.key === 'R') {
-                window.location.reload();
-            }
-        };
+    const [isPaused, setIsPaused] = useState(false);
 
+    const handleKeyPress = (event) => {
+        if (!event.key || typeof event.key !== 'string') return;
+        
+        const key = event.key.toLowerCase();
+        
+        switch (key) {
+            case 'r':
+                console.log('R key pressed - Reloading page');
+                window.location.reload();
+                break;
+                
+            case 't':
+                console.log('T key pressed - Toggling trails from:', SimulationSettings.enableTrails);
+                SimulationSettings.enableTrails = !SimulationSettings.enableTrails;
+                console.log('Trails toggled to:', SimulationSettings.enableTrails);
+                
+                // Clear existing trails when disabling
+                if (!SimulationSettings.enableTrails) {
+                    setBodiesData(prevBodies => 
+                        prevBodies.map(body => ({ ...body, trail: [] }))
+                    );
+                }
+                break;
+                
+            case 'm':
+                console.log('M key pressed - Toggling physics markers from:', SimulationSettings.enablePhysicsMarkers);
+                SimulationSettings.enablePhysicsMarkers = !SimulationSettings.enablePhysicsMarkers;
+                console.log('Physics markers toggled to:', SimulationSettings.enablePhysicsMarkers);
+                break;
+                
+            case ' ':
+            case 'p':
+            case 'space':
+                event.preventDefault(); // Prevent page scroll
+                console.log('Space key pressed - Toggling pause from:', isPaused);
+                setIsPaused(prev => !prev);
+                break;
+                
+            default:
+                // Do nothing for other keys
+                break;
+        }
+    };
+
+    useEffect(() => {
         window.addEventListener('keydown', handleKeyPress);
 
         // Cleanup event listener on component unmount
@@ -180,7 +226,7 @@ export default function Container(){
         <div onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
             <LaunchLine start={startClickPos} end={endClickPos} />
             <TrajectoryLine body={getPredictedBody()} existingBodies={bodiesData} />
-            <Simulation bodies={bodiesData} setBodiesData={setBodiesData} />
+            <Simulation bodies={bodiesData} setBodiesData={setBodiesData} isPaused={isPaused} />
         </div>
     );
 }

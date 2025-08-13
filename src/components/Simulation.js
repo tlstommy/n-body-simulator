@@ -3,15 +3,13 @@ import GravBody from './GravBody';
 import { SimulationSettings } from '../SimulationSettings';
 
 export default function Simulation(props){
-    const { bodies  } = props;
+    const { bodies, isPaused } = props;
     
     const canvasRef = useRef(null);
     
 
     const [bodyText, setBodyText] = useState(); 
 
-    const TRAILS = SimulationSettings.enableTrails;
-    const PHYSICS_MARKERS = SimulationSettings.enablePhysicsMarkers;
     const SIM_SPEED = SimulationSettings.simSpeed
     const EPSILON = SimulationSettings.epsilon; //softening param to prevent singularities or physics errors on collisions
     const G = SimulationSettings.G; //newtons universal Grav constant
@@ -51,46 +49,79 @@ export default function Simulation(props){
     
     
     
-    function handleCollision(body, otherBody) {
+   function handleCollision(body, otherBody) {
         
         //var setup
+        const x1 = { x: body.x, y: body.y };
+        const x2 = { x: otherBody.x, y: otherBody.y };
+
+        const m1v1 = { x: body.vX, y: body.vY };
+        const m2v2 = { x: otherBody.vX, y: otherBody.vY };
+
+
         const dx = otherBody.x - body.x;
+        //console.log(dx);
         const dy = otherBody.y - body.y;
-        const distanceSquared = dx**2 + dy**2;
-        const distance = Math.sqrt(distanceSquared);
+        //console.log(dy);
+        const distanceSquared =  dx**2 + dy**2;
+        const distance = (Math.sqrt(distanceSquared));
         
+        //console.log(Math.abs(body.vX - otherBody.vX));
         const overlap = body.radius + otherBody.radius - distance;
+        
         
         if (overlap > 0) {
             const combMass = body.mass + otherBody.mass;
+            
+            
+            const correction = overlap / 2;
+            
+
+
+
             const normalX = dx / distance;
             const normalY = dy / distance;
+
+            
+
+
+            //move objects
+            
+
+            
+
+            
+            
 
             if (collisionType === "bounce") {
                 [body.vX, otherBody.vX] = [otherBody.vX, body.vX];
                 [body.vY, otherBody.vY] = [otherBody.vY, body.vY];
             } else if (collisionType === "elastic") {
-                //relative velocities
+                //rel velocitys
                 const dvX = body.vX - otherBody.vX;
                 const dvY = body.vY - otherBody.vY;
+                //https://en.wikipedia.org/wiki/Elastic_collision
+                //dot product of rel velocity and the normal coll vectors
+                const dp = (dvX * normalX + dvY * normalY);    
+                //console.log(overlap)
+                if (dp >= 0 && overlap <= 0) return;
+                //
                 
-                //dot product of relative velocity and collision normal
-                const dp = dvX * normalX + dvY * normalY;    
-                
-                //if not collided move on
-                if (dp >= 0) return;
-                
-                //conservation of momentum for elastic collision
-                const impulse1 = (2.0 * otherBody.mass / combMass) * dp;
-                const impulse2 = (2.0 * body.mass / combMass) * dp;
-                
-                body.vX -= impulse1 * normalX;
-                body.vY -= impulse1 * normalY;
-                otherBody.vX += impulse2 * normalX;
-                otherBody.vY += impulse2 * normalY;
 
-                // Separate overlapping objects
+                //from wiki
+                //v`1 = v1 - (2m_2/(m1+m2) * (DP/ |x_1 - x_2|^2) * (x_1 - x_2)
+                const v1 = ((2.0 * otherBody.mass) / combMass) * (dp / distance);
+                const v2 = ((2.0 * body.mass) / combMass) * (dp / distance);
+                body.vX -= v1 * dx;
+                body.vY -= v1 * dy;
+                otherBody.vX += v2 * dx;
+                otherBody.vY += v2 * dy;
+
+
+                //now update incase of overlaps
                 const correction = overlap / 2.0;
+                
+                //console.log(distance)
                 if (!body.staticBody) {
                     body.x -= normalX * correction;
                     body.y -= normalY * correction;
@@ -99,7 +130,10 @@ export default function Simulation(props){
                     otherBody.x += normalX * correction;
                     otherBody.y += normalY * correction;
                 }
+
+                
             }
+        
         }
     }
     
@@ -186,7 +220,7 @@ export default function Simulation(props){
         body.aX = newAX;
         body.aY = newAY;
 
-        if(TRAILS){
+        if(SimulationSettings.enableTrails){
             //trail stuff
             //add cur pos to trail list
             body.trail.push({ x: body.x, y: body.y });
@@ -221,9 +255,17 @@ export default function Simulation(props){
         
             //run through each body and update its position and velocity
             bodies.forEach(body => {
-                const collsionData = updateBody(body, bodies);
+                // Only update physics if not paused
+                const collsionData = isPaused ? null : updateBody(body, bodies);
                 const { aX, aY } = calculateGravAccelelration(body, bodies);
-                GravBody({ ...body, ctx, aX, aY, showPhysicsMarkers: PHYSICS_MARKERS  });
+                GravBody({ 
+                    ...body, 
+                    ctx, 
+                    aX, 
+                    aY, 
+                    showPhysicsMarkers: SimulationSettings.enablePhysicsMarkers,
+                    trail: SimulationSettings.enableTrails ? body.trail : []
+                });
                 
                 if(collsionData){
                     if (collsionData.type === "fragment") {
@@ -262,7 +304,7 @@ export default function Simulation(props){
             }
             
         };
-    }, [bodies]);
+    }, [bodies, isPaused]);
     
     
     return( <div>
