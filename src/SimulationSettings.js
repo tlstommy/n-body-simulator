@@ -1,9 +1,9 @@
 
 export const SimulationSettings = {
   G: 100, // normalized gravitational constant for simulation
-  simSpeed: 1.0, // visual speed multiplier (0.0 = paused, 1.0 = full speed)
+  simSpeed: 0.5, // visual speed multiplier (0.0 = paused, 1.0 = full speed)
   physicsTimeStep: 0.05, // smaller timestep for stability at high speeds
-  physicsStepsPerFrame: 30, // many steps per frame for fast motion
+  physicsStepsPerFrame: 60, // many steps per frame for fast motion
   softening: 1e-9, // softening factor for collisions
   epsilon: 1e-2, // small value to prevent division by zero
   enableCollision: false,

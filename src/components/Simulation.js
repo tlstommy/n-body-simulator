@@ -225,6 +225,7 @@ export default function Simulation(props){
         if(SimulationSettings.enableTrails){
             //trail stuff
             //add cur pos to trail list
+            
             body.trail.push({ x: body.x, y: body.y });
 
             //trail lims
